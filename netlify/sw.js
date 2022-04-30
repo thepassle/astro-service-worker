@@ -5580,13 +5580,6 @@ Rename your file to \`[...page].astro\` or customize the param name via the \`pa
     }
   };
 
-  // node_modules/@astrojs/node/dist/shim.js
-  self.process = {
-    env: {},
-    argv: []
-  };
-  self.global = globalThis;
-
   // node_modules/@astrojs/node/dist/server.js
   self.addEventListener("install", (event) => {
     console.log("sw install");
@@ -5617,21 +5610,27 @@ Rename your file to \`[...page].astro\` or customize the param name via the \`pa
       }
     };
   }
-  async function start(manifest, args) {
+  async function start(manifest, args = { networkOnly: [] }) {
     self.addEventListener("fetch", async (event) => {
       const match = app.match(event.request);
       if (event.request.mode === "navigate") {
         console.log(1, { manifest, match, event });
         if (match) {
-          for (const route of args.networkOnly) {
+          for (const route of args?.networkOnly || []) {
             const pattern = new URLPattern({ pathname: route });
+            console.log(2, pattern);
             const match2 = pattern.exec(event.request.url);
+            console.log(3, match2);
             if (match2) {
+              console.log(4);
               return event.respondWith(fetch(event.request));
             }
           }
           const response = await app.render(event.request);
           return event.respondWith(response);
+        } else {
+          console.log(5);
+          return event.respondWith(fetch(event.request));
         }
       }
     });

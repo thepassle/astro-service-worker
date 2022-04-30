@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { build } from "esbuild";
 
-function getAdapter({networkOnly = {}} = {}) {
+function getAdapter({networkOnly = []} = {}) {
   return {
     name: "@astrojs/node",
     serverEntrypoint: "@astrojs/node/server.js",

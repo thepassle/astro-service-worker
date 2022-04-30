@@ -33,7 +33,7 @@ function createExports(manifest) {
   };
 }
 
-async function start(manifest, args) {
+async function start(manifest, args = {networkOnly: []}) {
 
   self.addEventListener('fetch', async (event) => {
     const match = app.match(event.request);
@@ -43,8 +43,11 @@ async function start(manifest, args) {
       if(match) {
         for(const route of args.networkOnly) {
           const pattern = new URLPattern({pathname: route});
+          console.log(2, pattern)
           const match = pattern.exec(event.request.url);
+          console.log(3, match)
           if(match) {
+            console.log(4)
             return event.respondWith(fetch(event.request));
           }
         }
@@ -52,6 +55,9 @@ async function start(manifest, args) {
         const response = await app.render(event.request);
         // const text = await response.text()
         return event.respondWith(response);
+      } else {
+        console.log(5);
+        return event.respondWith(fetch(event.request))
       }
     }
   });

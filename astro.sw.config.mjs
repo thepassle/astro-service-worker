@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
-import nodejs from '@astrojs/node';
+import serviceWorker from './service-worker-integration/index.js';
 
 export default defineConfig({
-  adapter: nodejs({
+  adapter: serviceWorker({
     networkOnly: ['/networkonly']
   }),
 });
