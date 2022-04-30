@@ -1,0 +1,20 @@
+{
+  "name": "@example/minimal",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && astro build --config astro.sw.config.mjs && cp dist/sw.js netlify/ && rm -rf dist",
+    "deploy": "npm run build && netlify deploy --prod --dir=netlify",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "astro": "^1.0.0-beta.20"
+  },
+  "dependencies": {
+    "@astrojs/node": "^0.1.1",
+    "@astrojs/netlify": "^0.3.3"
+  }
+}

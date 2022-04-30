@@ -1,0 +1,18 @@
+---
+
+---
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Astro</title>
+	</head>
+	<body>
+		<a href="/">home</a>
+		<h1>Network only route</h1>
+		<p>Hello i am rendered on the server only</p>
+	</body>
+	<script>
+		navigator.serviceWorker.register('/sw.js');
+	</script>
+</html>
