@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && astro build --config astro.sw.config.mjs && cp dist/sw.js netlify/ && rm -rf dist",
+    "build": "astro build && astro build --config astro.sw.config.mjs --experimental-ssr",
     "deploy": "npm run build && netlify deploy --prod --dir=netlify",
     "preview": "astro preview"
   },
@@ -14,7 +14,15 @@
     "astro": "^1.0.0-beta.20"
   },
   "dependencies": {
+    "@astrojs/netlify": "^0.3.3",
     "@astrojs/node": "^0.1.1",
-    "@astrojs/netlify": "^0.3.3"
+    "urlpattern-polyfill": "^4.0.3",
+    "workbox": "^0.0.0",
+    "workbox-build": "^6.5.3",
+    "workbox-core": "^6.5.3",
+    "workbox-expiration": "^6.5.3",
+    "workbox-precaching": "^6.5.3",
+    "workbox-routing": "^6.5.3",
+    "workbox-strategies": "^6.5.3"
   }
 }

@@ -6,16 +6,29 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>Astro</title>
+		<style is:global>
+			img {
+				width: 200px;
+			}
+		</style>
 	</head>
 	<body>
 		<h1>Astro</h1>
-		<p>⚙️ I am rendered in a service worker</p>
+		<p>First render is done via SSR, then by a ⚙️ service worker</p>
 		<ul>
 			<a href="/about"><li>about</li></a>
 			<a href="/networkonly"><li>network only route</li></a>
 		</ul>
+		<img src="/puppy.png" alt="puppy" />
 	</body>
 	<script>
 		navigator.serviceWorker.register('/sw.js');
+		let refreshing = false;
+
+		navigator.serviceWorker.addEventListener('controllerchange', () => {
+			if (refreshing) return;
+			window.location.reload();
+			refreshing = true;
+		});
 	</script>
 </html>

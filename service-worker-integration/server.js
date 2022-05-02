@@ -1,70 +1,52 @@
 import { App } from 'astro/app';
-// @TODO urlpatternpolyfill
+import { precacheAndRoute } from 'workbox-precaching';
+import { clientsClaim } from 'workbox-core';
+import 'urlpattern-polyfill';
 
-self.addEventListener('install', event => {
-  console.log('sw install');
-});
+self.skipWaiting();
+clientsClaim();
 
-self.addEventListener('activate', () => {
-  console.log('sw activate');
-  clients.claim();
-});
+precacheAndRoute(self.__WB_MANIFEST);
 
-let app;
-function createExports(manifest) {
-  app = new App(manifest);
-  return {
-    async handler(req, res, next) {
-      const route = app.match(req);
-      if (route) {
-        try {
-          const response = await app.render(req);
-        } catch (err) {
-          if (next) {
-            next(err);
-          } else {
-            throw err;
-          }
-        }
-      } else if (next) {
-        return next();
-      }
-    }
-  };
-}
+/**
+ * Empty export to avoid the following error from being logged in the build:
+ * "'createExports' is not exported by 'service-worker-integration/server.js'" 
+ * 
+ * We dont actually need this though 🤷‍♂️
+ */
+function createExports() {}
 
 async function start(manifest, args = {networkOnly: []}) {
-
+  const app = new App(manifest)
   self.addEventListener('fetch', async (event) => {
     const match = app.match(event.request);
     
     if(event.request.mode === 'navigate') {
-      console.log(1, {manifest, match, event});
       if(match) {
+        /** Match routes that we want to force to go to the network */
         for(const route of args.networkOnly) {
           const pattern = new URLPattern({pathname: route});
-          console.log(2, pattern)
           const match = pattern.exec(event.request.url);
-          console.log(3, match)
+
           if(match) {
-            console.log(4)
             return event.respondWith(fetch(event.request));
           }
         }
     
+        /** Render routes */
         const response = await app.render(event.request);
-        // const text = await response.text()
         return event.respondWith(response);
       } else {
-        console.log(5);
+        /** No match, fallback to network */
         return event.respondWith(fetch(event.request))
       }
     }
   });
-
 }
 
 export {
   createExports,
   start
 };
+
+

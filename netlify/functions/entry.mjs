@@ -260,26 +260,40 @@ async function renderAstroComponent(component) {
   return markHTMLString(await _render(template));
 }
 
+var index_astro_astro_type_style_index_0_lang = '';
+
 const $$metadata$2 = createMetadata("/src/pages/index.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [{ type: "inline", value: `
 		navigator.serviceWorker.register('/sw.js');
+		let refreshing = false;
+
+		navigator.serviceWorker.addEventListener('controllerchange', () => {
+			if (refreshing) return;
+			window.location.reload();
+			refreshing = true;
+		});
 	` }] });
 const $$Astro$2 = createAstro("/src/pages/index.astro", "https://astro.build", "file:///Users/au87xu/astro-service-worker/");
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro$2, $$props, $$slots);
   Astro2.self = $$Index;
+  const STYLES = [];
+  for (const STYLE of STYLES)
+    $$result.styles.add(STYLE);
   return render`<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width">
 		<title>Astro</title>
+		
 	<!--astro:head--></head>
 	<body>
 		<h1>Astro</h1>
-		<p>⚙️ I am rendered in a service worker</p>
+		<p>First render is done via SSR, then by a ⚙️ service worker</p>
 		<ul>
 			<a href="/about"><li>about</li></a>
 			<a href="/networkonly"><li>network only route</li></a>
 		</ul>
+		<img src="/puppy.png" alt="puppy">
 	
 </body></html>`;
 });
@@ -292,6 +306,13 @@ var _page0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 
 const $$metadata$1 = createMetadata("/src/pages/networkonly.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [{ type: "inline", value: `
 		navigator.serviceWorker.register('/sw.js');
+		let refreshing = false;
+
+		navigator.serviceWorker.addEventListener('controllerchange', () => {
+			if (refreshing) return;
+			window.location.reload();
+			refreshing = true;
+		});
 	` }] });
 const $$Astro$1 = createAstro("/src/pages/networkonly.astro", "https://astro.build", "file:///Users/au87xu/astro-service-worker/");
 const $$Networkonly = createComponent(async ($$result, $$props, $$slots) => {
@@ -307,6 +328,7 @@ const $$Networkonly = createComponent(async ($$result, $$props, $$slots) => {
 		<a href="/">home</a>
 		<h1>Network only route</h1>
 		<p>Hello i am rendered on the server only</p>
+		<p>I dont work offline</p>
 	
 </body></html>`;
 });
@@ -317,8 +339,22 @@ var _page1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   'default': $$Networkonly
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const get = () => {console.log('get');};
+
+var _page2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  get: get
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const $$metadata = createMetadata("/src/pages/about.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [{ type: "inline", value: `
 		navigator.serviceWorker.register('/sw.js');
+		let refreshing = false;
+
+		navigator.serviceWorker.addEventListener('controllerchange', () => {
+			if (refreshing) return;
+			window.location.reload();
+			refreshing = true;
+		});
 	` }] });
 const $$Astro = createAstro("/src/pages/about.astro", "https://astro.build", "file:///Users/au87xu/astro-service-worker/");
 const $$About = createComponent(async ($$result, $$props, $$slots) => {
@@ -333,18 +369,26 @@ const $$About = createComponent(async ($$result, $$props, $$slots) => {
 	<body>
 		<a href="/">home</a>
 		<h1>About</h1>
-		<p>Hello i am also rendered in a service worker</p>
+		<p>Hello i am also rendered by a service worker</p>
+		<p>I also work when offline!</p>
 	
 </body></html>`;
 });
 
-var _page2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+var _page3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   $$metadata: $$metadata,
   'default': $$About
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const pageMap = new Map([['src/pages/index.astro', _page0],['src/pages/networkonly.astro', _page1],['src/pages/about.astro', _page2],]);
+const a = 'a';
+
+var _page4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  a: a
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const pageMap = new Map([['src/pages/index.astro', _page0],['src/pages/networkonly.astro', _page1],['src/pages/endpoint-a.js', _page2],['src/pages/about.astro', _page3],['src/pages/foo.js', _page4],]);
 const renderers = [];
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -3212,7 +3256,7 @@ new RegExp(`\\.(${Array.from(STYLE_EXTENSIONS).map((s) => s.slice(1)).join("|")}
 const SCRIPT_EXTENSIONS = /* @__PURE__ */ new Set([".js", ".ts"]);
 new RegExp(`\\.(${Array.from(SCRIPT_EXTENSIONS).map((s) => s.slice(1)).join("|")})($|\\?)`);
 
-const _manifest = Object.assign(deserializeManifest({"routes":[{"file":"","links":[],"scripts":["entry.86981a80.js"],"routeData":{"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/"}},{"file":"","links":[],"scripts":["entry.86981a802.js"],"routeData":{"type":"page","pattern":"^\\/networkonly\\/?$","segments":[[{"content":"networkonly","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/networkonly.astro","pathname":"/networkonly"}},{"file":"","links":[],"scripts":["entry.86981a803.js"],"routeData":{"type":"page","pattern":"^\\/about\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about.astro","pathname":"/about"}}],"markdown":{"mode":"mdx","drafts":false,"syntaxHighlight":"shiki","shikiConfig":{"langs":[],"theme":"github-dark","wrap":false},"remarkPlugins":[],"rehypePlugins":[]},"pageMap":null,"renderers":[],"entryModules":{"/src/pages/index.astro/hoisted.js":"entry.86981a80.js","/src/pages/networkonly.astro/hoisted.js":"entry.86981a802.js","/src/pages/about.astro/hoisted.js":"entry.86981a803.js","\u0000@astrojs-ssr-virtual-entry":"entry.mjs","astro:scripts/before-hydration.js":"data:text/javascript;charset=utf-8,//[no before-hydration script]"},"assets":["/entry.86981a80.js","/entry.86981a802.js","/entry.86981a803.js","/favicon.ico"]}), {
+const _manifest = Object.assign(deserializeManifest({"routes":[{"file":"","links":["assets/asset.3211c58f.css"],"scripts":["entry.64b5e880.js"],"routeData":{"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/"}},{"file":"","links":[],"scripts":["entry.64b5e8802.js"],"routeData":{"type":"page","pattern":"^\\/networkonly\\/?$","segments":[[{"content":"networkonly","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/networkonly.astro","pathname":"/networkonly"}},{"file":"","links":[],"scripts":[],"routeData":{"type":"endpoint","pattern":"^\\/endpoint-a$","segments":[[{"content":"endpoint-a","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endpoint-a.js","pathname":"/endpoint-a"}},{"file":"","links":[],"scripts":["entry.64b5e8803.js"],"routeData":{"type":"page","pattern":"^\\/about\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about.astro","pathname":"/about"}},{"file":"","links":[],"scripts":[],"routeData":{"type":"endpoint","pattern":"^\\/foo$","segments":[[{"content":"foo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/foo.js","pathname":"/foo"}}],"markdown":{"mode":"mdx","drafts":false,"syntaxHighlight":"shiki","shikiConfig":{"langs":[],"theme":"github-dark","wrap":false},"remarkPlugins":[],"rehypePlugins":[]},"pageMap":null,"renderers":[],"entryModules":{"/src/pages/index.astro/hoisted.js":"entry.64b5e880.js","/src/pages/networkonly.astro/hoisted.js":"entry.64b5e8802.js","/src/pages/about.astro/hoisted.js":"entry.64b5e8803.js","\u0000@astrojs-ssr-virtual-entry":"entry.mjs","astro:scripts/before-hydration.js":"data:text/javascript;charset=utf-8,//[no before-hydration script]"},"assets":["/entry.64b5e880.js","/entry.64b5e8802.js","/entry.64b5e8803.js","/favicon.ico","/puppy.png"]}), {
 	pageMap: pageMap,
 	renderers: renderers
 });
