@@ -8,7 +8,8 @@ const SHIM = `self.process = {env: {}, argv: []}; self.global = globalThis;`;
 function getAdapter({networkOnly = []} = {}) {
   return {
     name: "astro-service-worker",
-    serverEntrypoint: `${process.cwd()}/service-worker-integration/server.js`,
+    serverEntrypoint: `astro-service-worker/service-worker-integration/server.js`,
+    // serverEntrypoint: `${process.cwd()}/service-worker-integration/server.js`,
     exports: [],
     args: { networkOnly }
   };

@@ -11,10 +11,10 @@
     "preview": "astro preview"
   },
   "devDependencies": {
-    "astro": "^1.0.0-beta.20"
+    "astro": "^1.0.0-beta.20",
+    "@astrojs/netlify": "^0.3.3"
   },
   "dependencies": {
-    "@astrojs/netlify": "^0.3.3",
     "@astrojs/node": "^0.1.1",
     "urlpattern-polyfill": "^4.0.3",
     "workbox": "^0.0.0",
@@ -24,5 +24,10 @@
     "workbox-precaching": "^6.5.3",
     "workbox-routing": "^6.5.3",
     "workbox-strategies": "^6.5.3"
-  }
+  },
+  "files": [
+    "index.js",
+    "service-worker-integration/index.js",
+    "service-worker-integration/server.js"
+  ]
 }
