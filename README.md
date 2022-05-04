@@ -1,62 +1,101 @@
 # Astro-service-worker
 
-> ⚙️ Offline-first Astro apps via SWSR (Service Worker Side Rendering)
+> ⚙️ Offline-capable [Astro](https://astro.build) apps via SWSR (Service Worker Side Rendering)
 
-## Configuration
+`astro-service-worker` will take your Astro SSR project, and create a service worker build out of it. This has several benefits:
 
-```js
-export default defineConfig({
-  adapter: serviceWorker({
-    /** 
-     * Directory to output the service worker to 
-     * For example, if you're using Astro's Netlify adapter, use: 'netlify'
-     */
-    outDir: 'dist',
-    /** Array of routes to be matched only on the server */
-    networkOnly: ['/networkonly'],
-    /** Provide custom logic to be added to your service worker */
-    swSrc: 'user-sw.js',
-    /** Configure or overwrite workbox-build `injectManifest` configuration */
-    workbox: {},
-    /** When set to true, enables minification for esbuild */
-    dev: false
-  }),
-});
-```
+- Your app is now offline-capable
+- Your app is now installable
+- The function invocations of your hosting provider are reduced dramatically, because requests can be served by the service worker in-browser
+- Huge performance benefits
+- It's a progressive enhancement
+
+All you have to do is add the integration, and consider that the code you write in your Astro frontmatter will now also need to run in the browser/service-worker. This means that you will not be able to make use of Nodejs built-in dependencies, or other commonjs libraries. If you still want to write server-only code, you can use the [`networkOnly`](#network-only) configuration option.
+
 
 ## Usage
 
-Currently, it's not possible to have multiple Astro `adapter`s. Thats why it's recommended to have two Astro configurations when using the service worker integration: `astro.config.mjs` and a special `astro.sw.config.mjs`.
+Install:
+
+```
+npm i -S astro-service-worker
+```
+
+Add the integration to your configuration:
 
 `astro.config.mjs`:
 ```js
 import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
-
-export default defineConfig({
-  adapter: netlify()
-});
-```
-
-And `astro.sw.config.mjs`:
-```js
-import { defineConfig } from 'astro/config';
 import serviceWorker from 'astro-service-worker';
 
 export default defineConfig({
-  adapter: serviceWorker({
-    outDir: 'dist',
-  })
+  adapter: netlify(),
+  integrations: [
+    serviceWorker()
+  ]
 });
 ```
 
-And then add the following script to your `package.json`:
-```json
-{
-  "scripts": {
-    "build": "astro build && astro build --config astro.sw.config.mjs",
-  }
-}
+> **Note:** `astro-service-worker` requires your app to run in SSR mode, instead of SSG mode.
+
+## Configuration
+
+```js
+export default defineConfig({
+  integrations: [
+    serviceWorker({
+      /** 
+       * Provide custom service worker logic 
+       */
+      swSrc: 'user-sw.js',
+
+      /** 
+       * Excludes specific pages from the service worker bundle, and forces them to always go to the network
+       * This is useful for server-only specific code, for example database connections
+       */
+      networkOnly: ['/networkonly-astro'],
+
+      /** 
+       * Configure workbox options 
+       */
+      workbox: {},
+
+      /** 
+       * Configure esbuild options 
+       */
+      esbuild: {},
+
+      /** 
+       * When set to true, enables minifcation for esbuild, defaults to true 
+       */
+      dev: false,
+
+      /** 
+       * Override the default service worker registration and update script 
+       */
+      swScript: ''
+    }),
+  ]
+});
+```
+
+
+## Overwriting Workbox options
+
+Internally, `astro-service-worker` makes use of [Workbox](https://developer.chrome.com/docs/workbox/modules/workbox-build/#injectmanifest-mode)'s `injectManifest` functionality. You can overwrite the default configuration via the `workbox` options:
+
+
+```js
+export default defineConfig({
+  integrations: [
+    serviceWorker({
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,jpeg}'],
+      }
+    }),
+  ]
+});
 ```
 
 ## Adding custom Service Worker logic
@@ -65,10 +104,11 @@ It could be the case that you need to extend the Service Worker to add custom lo
 
 ```js
 export default defineConfig({
-  adapter: serviceWorker({
-    outDir: 'dist',
-    swSrc: 'my-custom-sw.js',
-  }),
+  integrations: [
+    serviceWorker({
+      swSrc: 'my-custom-sw.js',
+    }),
+  ]
 });
 ```
 
@@ -79,52 +119,37 @@ self.addEventListener('fetch', (e) => {
 });
 ```
 
-## Limitations
+## Network-only
 
-### Multiple adapters
-
-Because currently multiple adapters and not supported, there is also no cross-communication between adapters possible, which means the `astro-service-worker` integration can't call `injectScript` to inject the service worker registration code. You'll have to manually add it to all your pages for now. In the future, this adapter may be just an integration, but some APIs required to make that happen are currently missing.
-
-### Dependencies
-Currently, there's no good way to distinguish between which of your source code should be executed only on the server, and which of your source code should be browser-compatible. That means that currently, all your `.astro` pages and components, and all your `.js` route handlers get bundled to the service worker. This means you can not use any dependencies that rely on Node built-in modules, for example, or other server-only dependencies.
-
-
-## Future steps and Feedback
-
-### Missing pieces/apis to make this happen
-
-Im currently working on turning this adapter into a integration (see gist [here](https://gist.github.com/thepassle/be9010c330d7524133a4cfcf0a1c2ea1)), which includes a vite plugin for bundling the service worker, which will make using this package a little bit easier:
+It could be the case that you would like to make use of some server-only endpoints or pages, perhaps for creating database connections, or other things that depend on Nodejs built-in modules that are not available in the browser. If that is the case, you can specify which page you'd like to exclude from the service worker bundle:
 
 ```js
-import { defineConfig } from 'astro/config';
-import netlify from '@astrojs/netlify';
-
 export default defineConfig({
-  adapter: netlify(),
-  integrations: [serviceWorker()]
+  integrations: [
+    serviceWorker({
+      networkOnly: ['/networkonly-page', '/db-endpoint', 'etc']
+    }),
+  ]
 });
 ```
 
-There are a few things missing to make this happen though. In order to create the service worker bundle, I need to have access to the SSR Manifest, which currently is not available in any of the integration hooks or vite/rollup hooks. I've created an issue for this [here](https://github.com/withastro/astro/issues/3251). 
 
-Additionally, it'd be nice to be able to import the `manifestReplace` and `pagesVirtualModuleId`, but they are not available in `astro/core`'s package export map.
+## Future: Streaming astro apps
 
-Ideally, I'd also have access to the pageData in my integration/vite plugin, which is in `internals` via `eachPageData(internals)`, but `internals` is not exposed anywhere either. Having access to internals also gives greater control over which code should be **server-only** and **service-worker-only**.
-### Streaming astro apps
+In the future, once Astro release streaming responses, we can make use of that to improve performance even further:
 
-Dreaming even further, it would be even more amazing to be able to stitch together stream responses in Astro components.
-
+`/blog/[id].astro`:
 ```astro
 ---
 import Header from '../src/components/Header.astro';
 import Sidemenu from '../src/components/Sidemenu.astro';
 import Footer from '../src/components/Footer.astro';
-import { streamable } from 'astro';
+const { id } = Astro.params;
 ---
 <html>
   <Header/>
   <Sidemenu/>
-  {streamable(() => fetch('/content/foo.md').then(render))}
+  {fetch(`/blog/${id}.html`).then(render)}
   <Footer/>
 </html>
 ```
@@ -152,7 +177,7 @@ As [Alex Russell says](https://twitter.com/slightlylate/status/15208577111638343
 > This is awesome because it means that you can now get the document starting to request your (SW cached) CSS, JS, and other "header" resources *in parallel* with SW startup *and* the network fetch. None of the steps serialise until content comes back.
 
 
-Given that the `render` function is a tagged template literal which returns an `Astro` component, it seems like something like this should not be completely impossible in the future, but likely requires some changes in Astro.
+Given that the Astro's `render` function is a tagged template literal which returns an `Astro` component, which is an async Iterable, it seems like this future may not be far off:
 
 ```js
 class AstroComponent {
@@ -174,5 +199,3 @@ class AstroComponent {
   }
 }
 ```
-
-E.g.: if `expression.type === 'streamable'`, execute the callback which returns the stream, and stream it along to the browser.

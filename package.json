@@ -1,33 +1,34 @@
 {
   "name": "astro-service-worker",
   "version": "0.0.1",
-  "type": "module",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && astro build --config astro.sw.config.mjs --experimental-ssr",
-    "deploy": "npm run build && netlify deploy --prod --dir=netlify",
+    "build": "astro build --experimental-integrations",
     "preview": "astro preview"
   },
   "devDependencies": {
-    "astro": "^1.0.0-beta.20",
+    "astro": "^1.0.0-beta.23",
     "@astrojs/netlify": "^0.3.3"
   },
   "dependencies": {
-    "@astrojs/node": "^0.1.1",
-    "urlpattern-polyfill": "^4.0.3",
-    "workbox": "^0.0.0",
+    "esbuild": "^0.14.38",
     "workbox-build": "^6.5.3",
     "workbox-core": "^6.5.3",
-    "workbox-expiration": "^6.5.3",
-    "workbox-precaching": "^6.5.3",
-    "workbox-routing": "^6.5.3",
-    "workbox-strategies": "^6.5.3"
+    "workbox-precaching": "^6.5.3"
   },
+  "keywords": [
+    "astro",
+    "workbox",
+    "ssr",
+    "swsr",
+    "serviceworker",
+    "pwa"
+  ],
   "files": [
     "index.js",
-    "service-worker-integration/index.js",
-    "service-worker-integration/server.js"
+    "service-worker-integration"
   ]
 }

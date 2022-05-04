@@ -1,0 +1,1 @@
+self.process = {env: {}, argv: []}; self.global = globalThis;

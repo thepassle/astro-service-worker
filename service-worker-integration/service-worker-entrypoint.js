@@ -1,7 +1,6 @@
 import { App } from 'astro/app';
 import { precacheAndRoute } from 'workbox-precaching';
 import { clientsClaim } from 'workbox-core';
-import 'urlpattern-polyfill';
 
 self.skipWaiting();
 clientsClaim();
@@ -16,7 +15,7 @@ precacheAndRoute(self.__WB_MANIFEST);
  */
 function createExports() {}
 
-async function start(manifest, args = {networkOnly: []}) {
+function start(manifest, args) {
   const app = new App(manifest)
   self.addEventListener('fetch', async (event) => {
     const match = app.match(event.request);
@@ -24,14 +23,14 @@ async function start(manifest, args = {networkOnly: []}) {
     if(event.request.mode === 'navigate') {
       if(match) {
         /** Match routes that we want to force to go to the network */
-        for(const route of args.networkOnly) {
-          const pattern = new URLPattern({pathname: route});
-          const match = pattern.exec(event.request.url);
+        // for(const route of args.networkOnly) {
+        //   const pattern = new URLPattern({pathname: route});
+        //   const match = pattern.exec(event.request.url);
 
-          if(match) {
-            return event.respondWith(fetch(event.request));
-          }
-        }
+        //   if(match) {
+        //     return event.respondWith(fetch(event.request));
+        //   }
+        // }
     
         /** Render routes */
         const response = await app.render(event.request);
