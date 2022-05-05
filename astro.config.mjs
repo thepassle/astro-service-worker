@@ -1,11 +1,13 @@
 import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
+import customElements from 'custom-elements-ssr/astro.js';
 import serviceWorker from './index.js';
 
 // https://astro.build/config
 export default defineConfig({
   adapter: netlify(),
   integrations: [
+    customElements(),
     serviceWorker({
       /** Provide custom service worker logic */
       swSrc: 'user-sw.js',
@@ -13,10 +15,10 @@ export default defineConfig({
        * Excludes specific pages from the service worker bundle, and forces them to always go to the network
        * This is useful for server-only specific code, for example database connections
        */
-      networkOnly: ['/networkonly'],
+      networkOnly: ['/networkonly', '/networkonly-endpoint'],
       /** Configure workbox options */
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png}"]
+        globPatterns: ["**/*.{js,css,html,png,ico}"]
       },
       /** Configure esbuild options */
       esbuild: {},
@@ -24,6 +26,11 @@ export default defineConfig({
       dev: false,
       /** Override the default service worker registration and update script */
       // swScript: ''
+      /**
+       * Provide a bare module specifier to a custom shim file. This may be useful when integrating third party
+       * SSR integrations, which may need to shim certain API's in a service worker environment
+       */
+      // shim: ['my-custom-integration/shim.js']
     }),
   ]
 });

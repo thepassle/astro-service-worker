@@ -12,7 +12,9 @@
   },
   "devDependencies": {
     "@astrojs/netlify": "^0.3.3",
-    "astro": "^1.0.0-beta.24"
+    "@generic-components/components": "^1.1.5",
+    "astro": "^1.0.0-beta.24",
+    "custom-elements-ssr": "^0.0.11"
   },
   "dependencies": {
     "esbuild": "^0.14.38",

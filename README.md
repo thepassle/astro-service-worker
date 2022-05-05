@@ -74,7 +74,13 @@ export default defineConfig({
       /** 
        * Override the default service worker registration and update script 
        */
-      swScript: ''
+      swScript: '',
+
+      /**
+       * Provide a bare module specifier to a custom shim file. This may be useful when integrating third party
+       * SSR integrations, which may need to shim certain API's in a service worker environment
+       */
+      shim: ['my-custom-integration/shim.js']
     }),
   ]
 });
@@ -118,6 +124,59 @@ self.addEventListener('fetch', (e) => {
   console.log('Custom logic!');
 });
 ```
+
+Note that you can also use modules in your custom service worker logic:
+
+```js
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate } from 'workbox-strategies';
+
+registerRoute(
+  /^https:\/\/fonts\.googleapis\.com/,
+  new StaleWhileRevalidate({
+    cacheName: 'google-fonts-stylesheets',
+  })
+);
+```
+
+## Combine with other integrations
+
+You can also combine this integration with other integrations.
+
+```js
+import { defineConfig } from 'astro/config';
+import netlify from '@astrojs/netlify';
+import customElements from 'custom-elements-ssr/astro.js';
+import serviceWorker from './index.js';
+
+export default defineConfig({
+  adapter: netlify(),
+  integrations: [
+    customElements(),
+    serviceWorker()
+  ]
+});
+```
+
+## Shim
+
+It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. The imports you provide here will be put at the very top of the service worker module before bundling.
+
+```js
+import { defineConfig } from 'astro/config';
+import netlify from '@astrojs/netlify';
+import serviceWorker from './index.js';
+
+export default defineConfig({
+  adapter: netlify(),
+  integrations: [
+    serviceWorker({
+      shim: ['my-custom-integration/shim.js']
+    })
+  ]
+});
+```
+
 
 ## Network-only
 

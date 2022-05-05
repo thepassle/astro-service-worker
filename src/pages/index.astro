@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../components/my-el.js';
+
 const posts = (await Astro.glob('../blogs/*.md')).sort((a,b) => a.frontmatter.id - b.frontmatter.id);
 ---
 <Layout>
@@ -23,4 +25,11 @@ const posts = (await Astro.glob('../blogs/*.md')).sort((a,b) => a.frontmatter.id
 		</article>
 	))}
 	</div>
+	<generic-tabs client:visible selected="1" label="people">
+		<button slot="tab">About</button>
+		<button slot="tab">Info</button>
+
+		<p slot="panel">Isn't that kind of crazy</p>
+		<p slot="panel">You can even render custom elements on the Service Worker Side</p>
+	</generic-tabs>
 </Layout>
