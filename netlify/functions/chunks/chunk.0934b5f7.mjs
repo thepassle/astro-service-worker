@@ -1,4 +1,4 @@
-import { f as renderSlot, g as renderPage, h as renderHead, i as renderEndpoint } from './chunk.f8e87ab6.mjs';
+import { f as renderSlot, g as renderPage, h as renderHead, i as renderEndpoint } from './chunk.632ca3bc.mjs';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 

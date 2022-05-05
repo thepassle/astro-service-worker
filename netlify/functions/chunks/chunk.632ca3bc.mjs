@@ -491,6 +491,7 @@ const $$Index = createComponent(async ($$result, $$props, $$slots) => {
 	<!--astro:head--></head>
 	<body>
 		<h1>Astro</h1>
+		<img src="/avatar.png" alt="avatar">
 	</body></html>`;
 });
 

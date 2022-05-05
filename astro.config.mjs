@@ -15,13 +15,15 @@ export default defineConfig({
        */
       networkOnly: ['/networkonly-astro'],
       /** Configure workbox options */
-      workbox: {},
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,png}"]
+      },
       /** Configure esbuild options */
       esbuild: {},
       /** When set to true, enables minifcation for esbuild, defaults to true */
       dev: false,
       /** Override the default service worker registration and update script */
-      swScript: ''
+      // swScript: ''
     }),
   ]
 });

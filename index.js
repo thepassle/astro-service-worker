@@ -64,14 +64,6 @@ export default function serviceWorker(options) {
         const swOutPath = cfg.outDir.pathname;
         const swOutFile = path.join(swOutPath, SW_FILE_NAME);
       
-        /** Add precacheManifest via Workbox */
-        await injectManifest({
-          globDirectory,
-          swSrc: swInPath,
-          swDest: swInPath,
-          ...(options?.workbox ?? {})
-        });
-
         /** Add SSR Manifest */
         fs.writeFileSync(
           swInPath, 
@@ -80,6 +72,14 @@ export default function serviceWorker(options) {
             () => JSON.stringify(manifest)
           )
         );
+
+        /** Add precacheManifest via Workbox */
+        const a = await injectManifest({
+          globDirectory,
+          swSrc: swInPath,
+          swDest: swInPath,
+          ...(options?.workbox ?? {})
+        });
 
         /** Bundle and build for the browser */
         await build({

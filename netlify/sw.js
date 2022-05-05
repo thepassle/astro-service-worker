@@ -1614,10 +1614,10 @@
   // netlify/functions/sw.js
   init_shim();
 
-  // netlify/functions/chunks/chunk.b05aab4d.mjs
+  // netlify/functions/chunks/chunk.0934b5f7.mjs
   init_shim();
 
-  // netlify/functions/chunks/chunk.f8e87ab6.mjs
+  // netlify/functions/chunks/chunk.632ca3bc.mjs
   init_shim();
   var { replace } = "";
   var ca = /[&<>'"]/g;
@@ -2075,6 +2075,7 @@ Make sure to use the static attribute syntax (\`${key}={value}\`) instead of the
 	<!--astro:head--></head>
 	<body>
 		<h1>Astro</h1>
+		<img src="/avatar.png" alt="avatar">
 	</body></html>`;
   });
   var _page0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -2097,7 +2098,7 @@ Make sure to use the static attribute syntax (\`${key}={value}\`) instead of the
     get
   }, Symbol.toStringTag, { value: "Module" }));
 
-  // netlify/functions/chunks/chunk.b05aab4d.mjs
+  // netlify/functions/chunks/chunk.0934b5f7.mjs
   var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
   function Mime$1() {
     this._types = /* @__PURE__ */ Object.create(null);
@@ -3747,8 +3748,8 @@ Make sure to use the static attribute syntax (\`${key}={value}\`) instead of the
     }
     dest.write(event);
   }
-  function warn(opts, type, ...messages2) {
-    return log(opts, "warn", type, ...messages2);
+  function warn(opts, type, ...messages3) {
+    return log(opts, "warn", type, ...messages3);
   }
   function debug(...args) {
     if ("_astroGlobalDebug" in globalThis) {
@@ -6621,8 +6622,8 @@ This is generally NOT safe. Learn more at https://bit.ly/wb-precache`;
         paramName: "capture"
       });
     }
-    const defaultRouter2 = getOrCreateDefaultRouter();
-    defaultRouter2.registerRoute(route);
+    const defaultRouter3 = getOrCreateDefaultRouter();
+    defaultRouter3.registerRoute(route);
     return route;
   }
 
@@ -6736,6 +6737,19 @@ This is generally NOT safe. Learn more at https://bit.ly/wb-precache`;
 
   // node_modules/workbox-core/registerQuotaErrorCallback.js
   init_shim();
+  function registerQuotaErrorCallback(callback) {
+    if (true) {
+      finalAssertExports.isType(callback, "function", {
+        moduleName: "workbox-core",
+        funcName: "register",
+        paramName: "callback"
+      });
+    }
+    quotaErrorCallbacks.add(callback);
+    if (true) {
+      logger.log("Registered a callback to respond to quota errors.", callback);
+    }
+  }
 
   // node_modules/workbox-core/_private.js
   init_shim();
@@ -6745,6 +6759,10 @@ This is generally NOT safe. Learn more at https://bit.ly/wb-precache`;
 
   // node_modules/workbox-core/_private/dontWaitFor.js
   init_shim();
+  function dontWaitFor(promise) {
+    void promise.then(() => {
+    });
+  }
 
   // node_modules/workbox-core/_private/resultingClientExists.js
   init_shim();
@@ -6775,7 +6793,7 @@ This is generally NOT safe. Learn more at https://bit.ly/wb-precache`;
   // netlify/functions/sw.js
   self.skipWaiting();
   clientsClaim();
-  precacheAndRoute(self.__WB_MANIFEST);
+  precacheAndRoute([{ "revision": "b595545a775e84c0348363c960ea6bdc", "url": "assets/asset.3211c58f.css" }, { "revision": "b078ee34b4d6b84e941eab2c73cce513", "url": "avatar.png" }]);
   function start(manifest, args) {
     const app = new App(manifest);
     self.addEventListener("fetch", async (event) => {
@@ -6790,10 +6808,1430 @@ This is generally NOT safe. Learn more at https://bit.ly/wb-precache`;
       }
     });
   }
+  try {
+    self["workbox:routing:6.5.2"] && _();
+  } catch (e) {
+  }
+  var defaultMethod2 = "GET";
+  var validMethods2 = [
+    "DELETE",
+    "GET",
+    "HEAD",
+    "PATCH",
+    "POST",
+    "PUT"
+  ];
+  var normalizeHandler2 = (handler) => {
+    if (handler && typeof handler === "object") {
+      if (true) {
+        finalAssertExports.hasMethod(handler, "handle", {
+          moduleName: "workbox-routing",
+          className: "Route",
+          funcName: "constructor",
+          paramName: "handler"
+        });
+      }
+      return handler;
+    } else {
+      if (true) {
+        finalAssertExports.isType(handler, "function", {
+          moduleName: "workbox-routing",
+          className: "Route",
+          funcName: "constructor",
+          paramName: "handler"
+        });
+      }
+      return { handle: handler };
+    }
+  };
+  var Route2 = class {
+    constructor(match, handler, method = defaultMethod2) {
+      if (true) {
+        finalAssertExports.isType(match, "function", {
+          moduleName: "workbox-routing",
+          className: "Route",
+          funcName: "constructor",
+          paramName: "match"
+        });
+        if (method) {
+          finalAssertExports.isOneOf(method, validMethods2, { paramName: "method" });
+        }
+      }
+      this.handler = normalizeHandler2(handler);
+      this.match = match;
+      this.method = method;
+    }
+    setCatchHandler(handler) {
+      this.catchHandler = normalizeHandler2(handler);
+    }
+  };
+  var RegExpRoute2 = class extends Route2 {
+    constructor(regExp, handler, method) {
+      if (true) {
+        finalAssertExports.isInstance(regExp, RegExp, {
+          moduleName: "workbox-routing",
+          className: "RegExpRoute",
+          funcName: "constructor",
+          paramName: "pattern"
+        });
+      }
+      const match = ({ url }) => {
+        const result = regExp.exec(url.href);
+        if (!result) {
+          return;
+        }
+        if (url.origin !== location.origin && result.index !== 0) {
+          if (true) {
+            logger.debug(`The regular expression '${regExp.toString()}' only partially matched against the cross-origin URL '${url.toString()}'. RegExpRoute's will only handle cross-origin requests if they match the entire URL.`);
+          }
+          return;
+        }
+        return result.slice(1);
+      };
+      super(match, handler, method);
+    }
+  };
+  var Router2 = class {
+    constructor() {
+      this._routes = /* @__PURE__ */ new Map();
+      this._defaultHandlerMap = /* @__PURE__ */ new Map();
+    }
+    get routes() {
+      return this._routes;
+    }
+    addFetchListener() {
+      self.addEventListener("fetch", (event) => {
+        const { request } = event;
+        const responsePromise = this.handleRequest({ request, event });
+        if (responsePromise) {
+          event.respondWith(responsePromise);
+        }
+      });
+    }
+    addCacheListener() {
+      self.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "CACHE_URLS") {
+          const { payload } = event.data;
+          if (true) {
+            logger.debug(`Caching URLs from the window`, payload.urlsToCache);
+          }
+          const requestPromises = Promise.all(payload.urlsToCache.map((entry) => {
+            if (typeof entry === "string") {
+              entry = [entry];
+            }
+            const request = new Request(...entry);
+            return this.handleRequest({ request, event });
+          }));
+          event.waitUntil(requestPromises);
+          if (event.ports && event.ports[0]) {
+            void requestPromises.then(() => event.ports[0].postMessage(true));
+          }
+        }
+      });
+    }
+    handleRequest({ request, event }) {
+      if (true) {
+        finalAssertExports.isInstance(request, Request, {
+          moduleName: "workbox-routing",
+          className: "Router",
+          funcName: "handleRequest",
+          paramName: "options.request"
+        });
+      }
+      const url = new URL(request.url, location.href);
+      if (!url.protocol.startsWith("http")) {
+        if (true) {
+          logger.debug(`Workbox Router only supports URLs that start with 'http'.`);
+        }
+        return;
+      }
+      const sameOrigin = url.origin === location.origin;
+      const { params, route } = this.findMatchingRoute({
+        event,
+        request,
+        sameOrigin,
+        url
+      });
+      let handler = route && route.handler;
+      const debugMessages = [];
+      if (true) {
+        if (handler) {
+          debugMessages.push([`Found a route to handle this request:`, route]);
+          if (params) {
+            debugMessages.push([
+              `Passing the following params to the route's handler:`,
+              params
+            ]);
+          }
+        }
+      }
+      const method = request.method;
+      if (!handler && this._defaultHandlerMap.has(method)) {
+        if (true) {
+          debugMessages.push(`Failed to find a matching route. Falling back to the default handler for ${method}.`);
+        }
+        handler = this._defaultHandlerMap.get(method);
+      }
+      if (!handler) {
+        if (true) {
+          logger.debug(`No route found for: ${getFriendlyURL(url)}`);
+        }
+        return;
+      }
+      if (true) {
+        logger.groupCollapsed(`Router is responding to: ${getFriendlyURL(url)}`);
+        debugMessages.forEach((msg) => {
+          if (Array.isArray(msg)) {
+            logger.log(...msg);
+          } else {
+            logger.log(msg);
+          }
+        });
+        logger.groupEnd();
+      }
+      let responsePromise;
+      try {
+        responsePromise = handler.handle({ url, request, event, params });
+      } catch (err) {
+        responsePromise = Promise.reject(err);
+      }
+      const catchHandler = route && route.catchHandler;
+      if (responsePromise instanceof Promise && (this._catchHandler || catchHandler)) {
+        responsePromise = responsePromise.catch(async (err) => {
+          if (catchHandler) {
+            if (true) {
+              logger.groupCollapsed(`Error thrown when responding to:  ${getFriendlyURL(url)}. Falling back to route's Catch Handler.`);
+              logger.error(`Error thrown by:`, route);
+              logger.error(err);
+              logger.groupEnd();
+            }
+            try {
+              return await catchHandler.handle({ url, request, event, params });
+            } catch (catchErr) {
+              if (catchErr instanceof Error) {
+                err = catchErr;
+              }
+            }
+          }
+          if (this._catchHandler) {
+            if (true) {
+              logger.groupCollapsed(`Error thrown when responding to:  ${getFriendlyURL(url)}. Falling back to global Catch Handler.`);
+              logger.error(`Error thrown by:`, route);
+              logger.error(err);
+              logger.groupEnd();
+            }
+            return this._catchHandler.handle({ url, request, event });
+          }
+          throw err;
+        });
+      }
+      return responsePromise;
+    }
+    findMatchingRoute({ url, sameOrigin, request, event }) {
+      const routes = this._routes.get(request.method) || [];
+      for (const route of routes) {
+        let params;
+        const matchResult = route.match({ url, sameOrigin, request, event });
+        if (matchResult) {
+          if (true) {
+            if (matchResult instanceof Promise) {
+              logger.warn(`While routing ${getFriendlyURL(url)}, an async matchCallback function was used. Please convert the following route to use a synchronous matchCallback function:`, route);
+            }
+          }
+          params = matchResult;
+          if (Array.isArray(params) && params.length === 0) {
+            params = void 0;
+          } else if (matchResult.constructor === Object && Object.keys(matchResult).length === 0) {
+            params = void 0;
+          } else if (typeof matchResult === "boolean") {
+            params = void 0;
+          }
+          return { route, params };
+        }
+      }
+      return {};
+    }
+    setDefaultHandler(handler, method = defaultMethod2) {
+      this._defaultHandlerMap.set(method, normalizeHandler2(handler));
+    }
+    setCatchHandler(handler) {
+      this._catchHandler = normalizeHandler2(handler);
+    }
+    registerRoute(route) {
+      if (true) {
+        finalAssertExports.isType(route, "object", {
+          moduleName: "workbox-routing",
+          className: "Router",
+          funcName: "registerRoute",
+          paramName: "route"
+        });
+        finalAssertExports.hasMethod(route, "match", {
+          moduleName: "workbox-routing",
+          className: "Router",
+          funcName: "registerRoute",
+          paramName: "route"
+        });
+        finalAssertExports.isType(route.handler, "object", {
+          moduleName: "workbox-routing",
+          className: "Router",
+          funcName: "registerRoute",
+          paramName: "route"
+        });
+        finalAssertExports.hasMethod(route.handler, "handle", {
+          moduleName: "workbox-routing",
+          className: "Router",
+          funcName: "registerRoute",
+          paramName: "route.handler"
+        });
+        finalAssertExports.isType(route.method, "string", {
+          moduleName: "workbox-routing",
+          className: "Router",
+          funcName: "registerRoute",
+          paramName: "route.method"
+        });
+      }
+      if (!this._routes.has(route.method)) {
+        this._routes.set(route.method, []);
+      }
+      this._routes.get(route.method).push(route);
+    }
+    unregisterRoute(route) {
+      if (!this._routes.has(route.method)) {
+        throw new WorkboxError("unregister-route-but-not-found-with-method", {
+          method: route.method
+        });
+      }
+      const routeIndex = this._routes.get(route.method).indexOf(route);
+      if (routeIndex > -1) {
+        this._routes.get(route.method).splice(routeIndex, 1);
+      } else {
+        throw new WorkboxError("unregister-route-route-not-registered");
+      }
+    }
+  };
+  var defaultRouter2;
+  var getOrCreateDefaultRouter2 = () => {
+    if (!defaultRouter2) {
+      defaultRouter2 = new Router2();
+      defaultRouter2.addFetchListener();
+      defaultRouter2.addCacheListener();
+    }
+    return defaultRouter2;
+  };
+  function registerRoute2(capture, handler, method) {
+    let route;
+    if (typeof capture === "string") {
+      const captureUrl = new URL(capture, location.href);
+      if (true) {
+        if (!(capture.startsWith("/") || capture.startsWith("http"))) {
+          throw new WorkboxError("invalid-string", {
+            moduleName: "workbox-routing",
+            funcName: "registerRoute",
+            paramName: "capture"
+          });
+        }
+        const valueToCheck = capture.startsWith("http") ? captureUrl.pathname : capture;
+        const wildcards = "[*:?+]";
+        if (new RegExp(`${wildcards}`).exec(valueToCheck)) {
+          logger.debug(`The '$capture' parameter contains an Express-style wildcard character (${wildcards}). Strings are now always interpreted as exact matches; use a RegExp for partial or wildcard matches.`);
+        }
+      }
+      const matchCallback = ({ url }) => {
+        if (true) {
+          if (url.pathname === captureUrl.pathname && url.origin !== captureUrl.origin) {
+            logger.debug(`${capture} only partially matches the cross-origin URL ${url.toString()}. This route will only handle cross-origin requests if they match the entire URL.`);
+          }
+        }
+        return url.href === captureUrl.href;
+      };
+      route = new Route2(matchCallback, handler, method);
+    } else if (capture instanceof RegExp) {
+      route = new RegExpRoute2(capture, handler, method);
+    } else if (typeof capture === "function") {
+      route = new Route2(capture, handler, method);
+    } else if (capture instanceof Route2) {
+      route = capture;
+    } else {
+      throw new WorkboxError("unsupported-route-type", {
+        moduleName: "workbox-routing",
+        funcName: "registerRoute",
+        paramName: "capture"
+      });
+    }
+    const defaultRouter3 = getOrCreateDefaultRouter2();
+    defaultRouter3.registerRoute(route);
+    return route;
+  }
+  try {
+    self["workbox:strategies:6.5.2"] && _();
+  } catch (e) {
+  }
+  function toRequest2(input) {
+    return typeof input === "string" ? new Request(input) : input;
+  }
+  var StrategyHandler2 = class {
+    constructor(strategy, options) {
+      this._cacheKeys = {};
+      if (true) {
+        finalAssertExports.isInstance(options.event, ExtendableEvent, {
+          moduleName: "workbox-strategies",
+          className: "StrategyHandler",
+          funcName: "constructor",
+          paramName: "options.event"
+        });
+      }
+      Object.assign(this, options);
+      this.event = options.event;
+      this._strategy = strategy;
+      this._handlerDeferred = new Deferred();
+      this._extendLifetimePromises = [];
+      this._plugins = [...strategy.plugins];
+      this._pluginStateMap = /* @__PURE__ */ new Map();
+      for (const plugin of this._plugins) {
+        this._pluginStateMap.set(plugin, {});
+      }
+      this.event.waitUntil(this._handlerDeferred.promise);
+    }
+    async fetch(input) {
+      const { event } = this;
+      let request = toRequest2(input);
+      if (request.mode === "navigate" && event instanceof FetchEvent && event.preloadResponse) {
+        const possiblePreloadResponse = await event.preloadResponse;
+        if (possiblePreloadResponse) {
+          if (true) {
+            logger.log(`Using a preloaded navigation response for '${getFriendlyURL(request.url)}'`);
+          }
+          return possiblePreloadResponse;
+        }
+      }
+      const originalRequest = this.hasCallback("fetchDidFail") ? request.clone() : null;
+      try {
+        for (const cb of this.iterateCallbacks("requestWillFetch")) {
+          request = await cb({ request: request.clone(), event });
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          throw new WorkboxError("plugin-error-request-will-fetch", {
+            thrownErrorMessage: err.message
+          });
+        }
+      }
+      const pluginFilteredRequest = request.clone();
+      try {
+        let fetchResponse;
+        fetchResponse = await fetch(request, request.mode === "navigate" ? void 0 : this._strategy.fetchOptions);
+        if (true) {
+          logger.debug(`Network request for '${getFriendlyURL(request.url)}' returned a response with status '${fetchResponse.status}'.`);
+        }
+        for (const callback of this.iterateCallbacks("fetchDidSucceed")) {
+          fetchResponse = await callback({
+            event,
+            request: pluginFilteredRequest,
+            response: fetchResponse
+          });
+        }
+        return fetchResponse;
+      } catch (error) {
+        if (true) {
+          logger.log(`Network request for '${getFriendlyURL(request.url)}' threw an error.`, error);
+        }
+        if (originalRequest) {
+          await this.runCallbacks("fetchDidFail", {
+            error,
+            event,
+            originalRequest: originalRequest.clone(),
+            request: pluginFilteredRequest.clone()
+          });
+        }
+        throw error;
+      }
+    }
+    async fetchAndCachePut(input) {
+      const response = await this.fetch(input);
+      const responseClone = response.clone();
+      void this.waitUntil(this.cachePut(input, responseClone));
+      return response;
+    }
+    async cacheMatch(key) {
+      const request = toRequest2(key);
+      let cachedResponse;
+      const { cacheName, matchOptions } = this._strategy;
+      const effectiveRequest = await this.getCacheKey(request, "read");
+      const multiMatchOptions = Object.assign(Object.assign({}, matchOptions), { cacheName });
+      cachedResponse = await caches.match(effectiveRequest, multiMatchOptions);
+      if (true) {
+        if (cachedResponse) {
+          logger.debug(`Found a cached response in '${cacheName}'.`);
+        } else {
+          logger.debug(`No cached response found in '${cacheName}'.`);
+        }
+      }
+      for (const callback of this.iterateCallbacks("cachedResponseWillBeUsed")) {
+        cachedResponse = await callback({
+          cacheName,
+          matchOptions,
+          cachedResponse,
+          request: effectiveRequest,
+          event: this.event
+        }) || void 0;
+      }
+      return cachedResponse;
+    }
+    async cachePut(key, response) {
+      const request = toRequest2(key);
+      await timeout(0);
+      const effectiveRequest = await this.getCacheKey(request, "write");
+      if (true) {
+        if (effectiveRequest.method && effectiveRequest.method !== "GET") {
+          throw new WorkboxError("attempt-to-cache-non-get-request", {
+            url: getFriendlyURL(effectiveRequest.url),
+            method: effectiveRequest.method
+          });
+        }
+        const vary = response.headers.get("Vary");
+        if (vary) {
+          logger.debug(`The response for ${getFriendlyURL(effectiveRequest.url)} has a 'Vary: ${vary}' header. Consider setting the {ignoreVary: true} option on your strategy to ensure cache matching and deletion works as expected.`);
+        }
+      }
+      if (!response) {
+        if (true) {
+          logger.error(`Cannot cache non-existent response for '${getFriendlyURL(effectiveRequest.url)}'.`);
+        }
+        throw new WorkboxError("cache-put-with-no-response", {
+          url: getFriendlyURL(effectiveRequest.url)
+        });
+      }
+      const responseToCache = await this._ensureResponseSafeToCache(response);
+      if (!responseToCache) {
+        if (true) {
+          logger.debug(`Response '${getFriendlyURL(effectiveRequest.url)}' will not be cached.`, responseToCache);
+        }
+        return false;
+      }
+      const { cacheName, matchOptions } = this._strategy;
+      const cache = await self.caches.open(cacheName);
+      const hasCacheUpdateCallback = this.hasCallback("cacheDidUpdate");
+      const oldResponse = hasCacheUpdateCallback ? await cacheMatchIgnoreParams(cache, effectiveRequest.clone(), ["__WB_REVISION__"], matchOptions) : null;
+      if (true) {
+        logger.debug(`Updating the '${cacheName}' cache with a new Response for ${getFriendlyURL(effectiveRequest.url)}.`);
+      }
+      try {
+        await cache.put(effectiveRequest, hasCacheUpdateCallback ? responseToCache.clone() : responseToCache);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.name === "QuotaExceededError") {
+            await executeQuotaErrorCallbacks();
+          }
+          throw error;
+        }
+      }
+      for (const callback of this.iterateCallbacks("cacheDidUpdate")) {
+        await callback({
+          cacheName,
+          oldResponse,
+          newResponse: responseToCache.clone(),
+          request: effectiveRequest,
+          event: this.event
+        });
+      }
+      return true;
+    }
+    async getCacheKey(request, mode) {
+      const key = `${request.url} | ${mode}`;
+      if (!this._cacheKeys[key]) {
+        let effectiveRequest = request;
+        for (const callback of this.iterateCallbacks("cacheKeyWillBeUsed")) {
+          effectiveRequest = toRequest2(await callback({
+            mode,
+            request: effectiveRequest,
+            event: this.event,
+            params: this.params
+          }));
+        }
+        this._cacheKeys[key] = effectiveRequest;
+      }
+      return this._cacheKeys[key];
+    }
+    hasCallback(name) {
+      for (const plugin of this._strategy.plugins) {
+        if (name in plugin) {
+          return true;
+        }
+      }
+      return false;
+    }
+    async runCallbacks(name, param) {
+      for (const callback of this.iterateCallbacks(name)) {
+        await callback(param);
+      }
+    }
+    *iterateCallbacks(name) {
+      for (const plugin of this._strategy.plugins) {
+        if (typeof plugin[name] === "function") {
+          const state = this._pluginStateMap.get(plugin);
+          const statefulCallback = (param) => {
+            const statefulParam = Object.assign(Object.assign({}, param), { state });
+            return plugin[name](statefulParam);
+          };
+          yield statefulCallback;
+        }
+      }
+    }
+    waitUntil(promise) {
+      this._extendLifetimePromises.push(promise);
+      return promise;
+    }
+    async doneWaiting() {
+      let promise;
+      while (promise = this._extendLifetimePromises.shift()) {
+        await promise;
+      }
+    }
+    destroy() {
+      this._handlerDeferred.resolve(null);
+    }
+    async _ensureResponseSafeToCache(response) {
+      let responseToCache = response;
+      let pluginsUsed = false;
+      for (const callback of this.iterateCallbacks("cacheWillUpdate")) {
+        responseToCache = await callback({
+          request: this.request,
+          response: responseToCache,
+          event: this.event
+        }) || void 0;
+        pluginsUsed = true;
+        if (!responseToCache) {
+          break;
+        }
+      }
+      if (!pluginsUsed) {
+        if (responseToCache && responseToCache.status !== 200) {
+          responseToCache = void 0;
+        }
+        if (true) {
+          if (responseToCache) {
+            if (responseToCache.status !== 200) {
+              if (responseToCache.status === 0) {
+                logger.warn(`The response for '${this.request.url}' is an opaque response. The caching strategy that you're using will not cache opaque responses by default.`);
+              } else {
+                logger.debug(`The response for '${this.request.url}' returned a status code of '${response.status}' and won't be cached as a result.`);
+              }
+            }
+          }
+        }
+      }
+      return responseToCache;
+    }
+  };
+  var Strategy2 = class {
+    constructor(options = {}) {
+      this.cacheName = cacheNames.getRuntimeName(options.cacheName);
+      this.plugins = options.plugins || [];
+      this.fetchOptions = options.fetchOptions;
+      this.matchOptions = options.matchOptions;
+    }
+    handle(options) {
+      const [responseDone] = this.handleAll(options);
+      return responseDone;
+    }
+    handleAll(options) {
+      if (options instanceof FetchEvent) {
+        options = {
+          event: options,
+          request: options.request
+        };
+      }
+      const event = options.event;
+      const request = typeof options.request === "string" ? new Request(options.request) : options.request;
+      const params = "params" in options ? options.params : void 0;
+      const handler = new StrategyHandler2(this, { event, request, params });
+      const responseDone = this._getResponse(handler, request, event);
+      const handlerDone = this._awaitComplete(responseDone, handler, request, event);
+      return [responseDone, handlerDone];
+    }
+    async _getResponse(handler, request, event) {
+      await handler.runCallbacks("handlerWillStart", { event, request });
+      let response = void 0;
+      try {
+        response = await this._handle(request, handler);
+        if (!response || response.type === "error") {
+          throw new WorkboxError("no-response", { url: request.url });
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          for (const callback of handler.iterateCallbacks("handlerDidError")) {
+            response = await callback({ error, event, request });
+            if (response) {
+              break;
+            }
+          }
+        }
+        if (!response) {
+          throw error;
+        } else if (true) {
+          logger.log(`While responding to '${getFriendlyURL(request.url)}', an ${error instanceof Error ? error.toString() : ""} error occurred. Using a fallback response provided by a handlerDidError plugin.`);
+        }
+      }
+      for (const callback of handler.iterateCallbacks("handlerWillRespond")) {
+        response = await callback({ event, request, response });
+      }
+      return response;
+    }
+    async _awaitComplete(responseDone, handler, request, event) {
+      let response;
+      let error;
+      try {
+        response = await responseDone;
+      } catch (error2) {
+      }
+      try {
+        await handler.runCallbacks("handlerDidRespond", {
+          event,
+          request,
+          response
+        });
+        await handler.doneWaiting();
+      } catch (waitUntilError) {
+        if (waitUntilError instanceof Error) {
+          error = waitUntilError;
+        }
+      }
+      await handler.runCallbacks("handlerDidComplete", {
+        event,
+        request,
+        response,
+        error
+      });
+      handler.destroy();
+      if (error) {
+        throw error;
+      }
+    }
+  };
+  var messages2 = {
+    strategyStart: (strategyName, request) => `Using ${strategyName} to respond to '${getFriendlyURL(request.url)}'`,
+    printFinalResponse: (response) => {
+      if (response) {
+        logger.groupCollapsed(`View the final response here.`);
+        logger.log(response || "[No response returned]");
+        logger.groupEnd();
+      }
+    }
+  };
+  var CacheFirst = class extends Strategy2 {
+    async _handle(request, handler) {
+      const logs = [];
+      if (true) {
+        finalAssertExports.isInstance(request, Request, {
+          moduleName: "workbox-strategies",
+          className: this.constructor.name,
+          funcName: "makeRequest",
+          paramName: "request"
+        });
+      }
+      let response = await handler.cacheMatch(request);
+      let error = void 0;
+      if (!response) {
+        if (true) {
+          logs.push(`No response found in the '${this.cacheName}' cache. Will respond with a network request.`);
+        }
+        try {
+          response = await handler.fetchAndCachePut(request);
+        } catch (err) {
+          if (err instanceof Error) {
+            error = err;
+          }
+        }
+        if (true) {
+          if (response) {
+            logs.push(`Got response from network.`);
+          } else {
+            logs.push(`Unable to get a response from the network.`);
+          }
+        }
+      } else {
+        if (true) {
+          logs.push(`Found a cached response in the '${this.cacheName}' cache.`);
+        }
+      }
+      if (true) {
+        logger.groupCollapsed(messages2.strategyStart(this.constructor.name, request));
+        for (const log2 of logs) {
+          logger.log(log2);
+        }
+        messages2.printFinalResponse(response);
+        logger.groupEnd();
+      }
+      if (!response) {
+        throw new WorkboxError("no-response", { url: request.url, error });
+      }
+      return response;
+    }
+  };
+  var cacheOkAndOpaquePlugin = {
+    cacheWillUpdate: async ({ response }) => {
+      if (response.status === 200 || response.status === 0) {
+        return response;
+      }
+      return null;
+    }
+  };
+  var StaleWhileRevalidate = class extends Strategy2 {
+    constructor(options = {}) {
+      super(options);
+      if (!this.plugins.some((p) => "cacheWillUpdate" in p)) {
+        this.plugins.unshift(cacheOkAndOpaquePlugin);
+      }
+    }
+    async _handle(request, handler) {
+      const logs = [];
+      if (true) {
+        finalAssertExports.isInstance(request, Request, {
+          moduleName: "workbox-strategies",
+          className: this.constructor.name,
+          funcName: "handle",
+          paramName: "request"
+        });
+      }
+      const fetchAndCachePromise = handler.fetchAndCachePut(request).catch(() => {
+      });
+      void handler.waitUntil(fetchAndCachePromise);
+      let response = await handler.cacheMatch(request);
+      let error;
+      if (response) {
+        if (true) {
+          logs.push(`Found a cached response in the '${this.cacheName}' cache. Will update with the network response in the background.`);
+        }
+      } else {
+        if (true) {
+          logs.push(`No response found in the '${this.cacheName}' cache. Will wait for the network response.`);
+        }
+        try {
+          response = await fetchAndCachePromise;
+        } catch (err) {
+          if (err instanceof Error) {
+            error = err;
+          }
+        }
+      }
+      if (true) {
+        logger.groupCollapsed(messages2.strategyStart(this.constructor.name, request));
+        for (const log2 of logs) {
+          logger.log(log2);
+        }
+        messages2.printFinalResponse(response);
+        logger.groupEnd();
+      }
+      if (!response) {
+        throw new WorkboxError("no-response", { url: request.url, error });
+      }
+      return response;
+    }
+  };
+  try {
+    self["workbox:cacheable-response:6.5.2"] && _();
+  } catch (e) {
+  }
+  var CacheableResponse = class {
+    constructor(config = {}) {
+      if (true) {
+        if (!(config.statuses || config.headers)) {
+          throw new WorkboxError("statuses-or-headers-required", {
+            moduleName: "workbox-cacheable-response",
+            className: "CacheableResponse",
+            funcName: "constructor"
+          });
+        }
+        if (config.statuses) {
+          finalAssertExports.isArray(config.statuses, {
+            moduleName: "workbox-cacheable-response",
+            className: "CacheableResponse",
+            funcName: "constructor",
+            paramName: "config.statuses"
+          });
+        }
+        if (config.headers) {
+          finalAssertExports.isType(config.headers, "object", {
+            moduleName: "workbox-cacheable-response",
+            className: "CacheableResponse",
+            funcName: "constructor",
+            paramName: "config.headers"
+          });
+        }
+      }
+      this._statuses = config.statuses;
+      this._headers = config.headers;
+    }
+    isResponseCacheable(response) {
+      if (true) {
+        finalAssertExports.isInstance(response, Response, {
+          moduleName: "workbox-cacheable-response",
+          className: "CacheableResponse",
+          funcName: "isResponseCacheable",
+          paramName: "response"
+        });
+      }
+      let cacheable = true;
+      if (this._statuses) {
+        cacheable = this._statuses.includes(response.status);
+      }
+      if (this._headers && cacheable) {
+        cacheable = Object.keys(this._headers).some((headerName) => {
+          return response.headers.get(headerName) === this._headers[headerName];
+        });
+      }
+      if (true) {
+        if (!cacheable) {
+          logger.groupCollapsed(`The request for '${getFriendlyURL(response.url)}' returned a response that does not meet the criteria for being cached.`);
+          logger.groupCollapsed(`View cacheability criteria here.`);
+          logger.log(`Cacheable statuses: ` + JSON.stringify(this._statuses));
+          logger.log(`Cacheable headers: ` + JSON.stringify(this._headers, null, 2));
+          logger.groupEnd();
+          const logFriendlyHeaders = {};
+          response.headers.forEach((value, key) => {
+            logFriendlyHeaders[key] = value;
+          });
+          logger.groupCollapsed(`View response status and headers here.`);
+          logger.log(`Response status: ${response.status}`);
+          logger.log(`Response headers: ` + JSON.stringify(logFriendlyHeaders, null, 2));
+          logger.groupEnd();
+          logger.groupCollapsed(`View full response details here.`);
+          logger.log(response.headers);
+          logger.log(response);
+          logger.groupEnd();
+          logger.groupEnd();
+        }
+      }
+      return cacheable;
+    }
+  };
+  var CacheableResponsePlugin = class {
+    constructor(config) {
+      this.cacheWillUpdate = async ({ response }) => {
+        if (this._cacheableResponse.isResponseCacheable(response)) {
+          return response;
+        }
+        return null;
+      };
+      this._cacheableResponse = new CacheableResponse(config);
+    }
+  };
+  var instanceOfAny = (object, constructors) => constructors.some((c) => object instanceof c);
+  var idbProxyableTypes;
+  var cursorAdvanceMethods;
+  function getIdbProxyableTypes() {
+    return idbProxyableTypes || (idbProxyableTypes = [
+      IDBDatabase,
+      IDBObjectStore,
+      IDBIndex,
+      IDBCursor,
+      IDBTransaction
+    ]);
+  }
+  function getCursorAdvanceMethods() {
+    return cursorAdvanceMethods || (cursorAdvanceMethods = [
+      IDBCursor.prototype.advance,
+      IDBCursor.prototype.continue,
+      IDBCursor.prototype.continuePrimaryKey
+    ]);
+  }
+  var cursorRequestMap = /* @__PURE__ */ new WeakMap();
+  var transactionDoneMap = /* @__PURE__ */ new WeakMap();
+  var transactionStoreNamesMap = /* @__PURE__ */ new WeakMap();
+  var transformCache = /* @__PURE__ */ new WeakMap();
+  var reverseTransformCache = /* @__PURE__ */ new WeakMap();
+  function promisifyRequest(request) {
+    const promise = new Promise((resolve2, reject) => {
+      const unlisten = () => {
+        request.removeEventListener("success", success);
+        request.removeEventListener("error", error);
+      };
+      const success = () => {
+        resolve2(wrap(request.result));
+        unlisten();
+      };
+      const error = () => {
+        reject(request.error);
+        unlisten();
+      };
+      request.addEventListener("success", success);
+      request.addEventListener("error", error);
+    });
+    promise.then((value) => {
+      if (value instanceof IDBCursor) {
+        cursorRequestMap.set(value, request);
+      }
+    }).catch(() => {
+    });
+    reverseTransformCache.set(promise, request);
+    return promise;
+  }
+  function cacheDonePromiseForTransaction(tx) {
+    if (transactionDoneMap.has(tx))
+      return;
+    const done = new Promise((resolve2, reject) => {
+      const unlisten = () => {
+        tx.removeEventListener("complete", complete);
+        tx.removeEventListener("error", error);
+        tx.removeEventListener("abort", error);
+      };
+      const complete = () => {
+        resolve2();
+        unlisten();
+      };
+      const error = () => {
+        reject(tx.error || new DOMException("AbortError", "AbortError"));
+        unlisten();
+      };
+      tx.addEventListener("complete", complete);
+      tx.addEventListener("error", error);
+      tx.addEventListener("abort", error);
+    });
+    transactionDoneMap.set(tx, done);
+  }
+  var idbProxyTraps = {
+    get(target, prop, receiver) {
+      if (target instanceof IDBTransaction) {
+        if (prop === "done")
+          return transactionDoneMap.get(target);
+        if (prop === "objectStoreNames") {
+          return target.objectStoreNames || transactionStoreNamesMap.get(target);
+        }
+        if (prop === "store") {
+          return receiver.objectStoreNames[1] ? void 0 : receiver.objectStore(receiver.objectStoreNames[0]);
+        }
+      }
+      return wrap(target[prop]);
+    },
+    set(target, prop, value) {
+      target[prop] = value;
+      return true;
+    },
+    has(target, prop) {
+      if (target instanceof IDBTransaction && (prop === "done" || prop === "store")) {
+        return true;
+      }
+      return prop in target;
+    }
+  };
+  function replaceTraps(callback) {
+    idbProxyTraps = callback(idbProxyTraps);
+  }
+  function wrapFunction(func) {
+    if (func === IDBDatabase.prototype.transaction && !("objectStoreNames" in IDBTransaction.prototype)) {
+      return function(storeNames, ...args) {
+        const tx = func.call(unwrap(this), storeNames, ...args);
+        transactionStoreNamesMap.set(tx, storeNames.sort ? storeNames.sort() : [storeNames]);
+        return wrap(tx);
+      };
+    }
+    if (getCursorAdvanceMethods().includes(func)) {
+      return function(...args) {
+        func.apply(unwrap(this), args);
+        return wrap(cursorRequestMap.get(this));
+      };
+    }
+    return function(...args) {
+      return wrap(func.apply(unwrap(this), args));
+    };
+  }
+  function transformCachableValue(value) {
+    if (typeof value === "function")
+      return wrapFunction(value);
+    if (value instanceof IDBTransaction)
+      cacheDonePromiseForTransaction(value);
+    if (instanceOfAny(value, getIdbProxyableTypes()))
+      return new Proxy(value, idbProxyTraps);
+    return value;
+  }
+  function wrap(value) {
+    if (value instanceof IDBRequest)
+      return promisifyRequest(value);
+    if (transformCache.has(value))
+      return transformCache.get(value);
+    const newValue = transformCachableValue(value);
+    if (newValue !== value) {
+      transformCache.set(value, newValue);
+      reverseTransformCache.set(newValue, value);
+    }
+    return newValue;
+  }
+  var unwrap = (value) => reverseTransformCache.get(value);
+  function openDB(name, version, { blocked, upgrade, blocking, terminated } = {}) {
+    const request = indexedDB.open(name, version);
+    const openPromise = wrap(request);
+    if (upgrade) {
+      request.addEventListener("upgradeneeded", (event) => {
+        upgrade(wrap(request.result), event.oldVersion, event.newVersion, wrap(request.transaction));
+      });
+    }
+    if (blocked)
+      request.addEventListener("blocked", () => blocked());
+    openPromise.then((db) => {
+      if (terminated)
+        db.addEventListener("close", () => terminated());
+      if (blocking)
+        db.addEventListener("versionchange", () => blocking());
+    }).catch(() => {
+    });
+    return openPromise;
+  }
+  function deleteDB(name, { blocked } = {}) {
+    const request = indexedDB.deleteDatabase(name);
+    if (blocked)
+      request.addEventListener("blocked", () => blocked());
+    return wrap(request).then(() => void 0);
+  }
+  var readMethods = ["get", "getKey", "getAll", "getAllKeys", "count"];
+  var writeMethods = ["put", "add", "delete", "clear"];
+  var cachedMethods = /* @__PURE__ */ new Map();
+  function getMethod(target, prop) {
+    if (!(target instanceof IDBDatabase && !(prop in target) && typeof prop === "string")) {
+      return;
+    }
+    if (cachedMethods.get(prop))
+      return cachedMethods.get(prop);
+    const targetFuncName = prop.replace(/FromIndex$/, "");
+    const useIndex = prop !== targetFuncName;
+    const isWrite = writeMethods.includes(targetFuncName);
+    if (!(targetFuncName in (useIndex ? IDBIndex : IDBObjectStore).prototype) || !(isWrite || readMethods.includes(targetFuncName))) {
+      return;
+    }
+    const method = async function(storeName, ...args) {
+      const tx = this.transaction(storeName, isWrite ? "readwrite" : "readonly");
+      let target2 = tx.store;
+      if (useIndex)
+        target2 = target2.index(args.shift());
+      return (await Promise.all([
+        target2[targetFuncName](...args),
+        isWrite && tx.done
+      ]))[0];
+    };
+    cachedMethods.set(prop, method);
+    return method;
+  }
+  replaceTraps((oldTraps) => ({
+    ...oldTraps,
+    get: (target, prop, receiver) => getMethod(target, prop) || oldTraps.get(target, prop, receiver),
+    has: (target, prop) => !!getMethod(target, prop) || oldTraps.has(target, prop)
+  }));
+  try {
+    self["workbox:expiration:6.5.2"] && _();
+  } catch (e) {
+  }
+  var DB_NAME = "workbox-expiration";
+  var CACHE_OBJECT_STORE = "cache-entries";
+  var normalizeURL = (unNormalizedUrl) => {
+    const url = new URL(unNormalizedUrl, location.href);
+    url.hash = "";
+    return url.href;
+  };
+  var CacheTimestampsModel = class {
+    constructor(cacheName) {
+      this._db = null;
+      this._cacheName = cacheName;
+    }
+    _upgradeDb(db) {
+      const objStore = db.createObjectStore(CACHE_OBJECT_STORE, { keyPath: "id" });
+      objStore.createIndex("cacheName", "cacheName", { unique: false });
+      objStore.createIndex("timestamp", "timestamp", { unique: false });
+    }
+    _upgradeDbAndDeleteOldDbs(db) {
+      this._upgradeDb(db);
+      if (this._cacheName) {
+        void deleteDB(this._cacheName);
+      }
+    }
+    async setTimestamp(url, timestamp) {
+      url = normalizeURL(url);
+      const entry = {
+        url,
+        timestamp,
+        cacheName: this._cacheName,
+        id: this._getId(url)
+      };
+      const db = await this.getDb();
+      const tx = db.transaction(CACHE_OBJECT_STORE, "readwrite", {
+        durability: "relaxed"
+      });
+      await tx.store.put(entry);
+      await tx.done;
+    }
+    async getTimestamp(url) {
+      const db = await this.getDb();
+      const entry = await db.get(CACHE_OBJECT_STORE, this._getId(url));
+      return entry === null || entry === void 0 ? void 0 : entry.timestamp;
+    }
+    async expireEntries(minTimestamp, maxCount) {
+      const db = await this.getDb();
+      let cursor = await db.transaction(CACHE_OBJECT_STORE).store.index("timestamp").openCursor(null, "prev");
+      const entriesToDelete = [];
+      let entriesNotDeletedCount = 0;
+      while (cursor) {
+        const result = cursor.value;
+        if (result.cacheName === this._cacheName) {
+          if (minTimestamp && result.timestamp < minTimestamp || maxCount && entriesNotDeletedCount >= maxCount) {
+            entriesToDelete.push(cursor.value);
+          } else {
+            entriesNotDeletedCount++;
+          }
+        }
+        cursor = await cursor.continue();
+      }
+      const urlsDeleted = [];
+      for (const entry of entriesToDelete) {
+        await db.delete(CACHE_OBJECT_STORE, entry.id);
+        urlsDeleted.push(entry.url);
+      }
+      return urlsDeleted;
+    }
+    _getId(url) {
+      return this._cacheName + "|" + normalizeURL(url);
+    }
+    async getDb() {
+      if (!this._db) {
+        this._db = await openDB(DB_NAME, 1, {
+          upgrade: this._upgradeDbAndDeleteOldDbs.bind(this)
+        });
+      }
+      return this._db;
+    }
+  };
+  var CacheExpiration = class {
+    constructor(cacheName, config = {}) {
+      this._isRunning = false;
+      this._rerunRequested = false;
+      if (true) {
+        finalAssertExports.isType(cacheName, "string", {
+          moduleName: "workbox-expiration",
+          className: "CacheExpiration",
+          funcName: "constructor",
+          paramName: "cacheName"
+        });
+        if (!(config.maxEntries || config.maxAgeSeconds)) {
+          throw new WorkboxError("max-entries-or-age-required", {
+            moduleName: "workbox-expiration",
+            className: "CacheExpiration",
+            funcName: "constructor"
+          });
+        }
+        if (config.maxEntries) {
+          finalAssertExports.isType(config.maxEntries, "number", {
+            moduleName: "workbox-expiration",
+            className: "CacheExpiration",
+            funcName: "constructor",
+            paramName: "config.maxEntries"
+          });
+        }
+        if (config.maxAgeSeconds) {
+          finalAssertExports.isType(config.maxAgeSeconds, "number", {
+            moduleName: "workbox-expiration",
+            className: "CacheExpiration",
+            funcName: "constructor",
+            paramName: "config.maxAgeSeconds"
+          });
+        }
+      }
+      this._maxEntries = config.maxEntries;
+      this._maxAgeSeconds = config.maxAgeSeconds;
+      this._matchOptions = config.matchOptions;
+      this._cacheName = cacheName;
+      this._timestampModel = new CacheTimestampsModel(cacheName);
+    }
+    async expireEntries() {
+      if (this._isRunning) {
+        this._rerunRequested = true;
+        return;
+      }
+      this._isRunning = true;
+      const minTimestamp = this._maxAgeSeconds ? Date.now() - this._maxAgeSeconds * 1e3 : 0;
+      const urlsExpired = await this._timestampModel.expireEntries(minTimestamp, this._maxEntries);
+      const cache = await self.caches.open(this._cacheName);
+      for (const url of urlsExpired) {
+        await cache.delete(url, this._matchOptions);
+      }
+      if (true) {
+        if (urlsExpired.length > 0) {
+          logger.groupCollapsed(`Expired ${urlsExpired.length} ${urlsExpired.length === 1 ? "entry" : "entries"} and removed ${urlsExpired.length === 1 ? "it" : "them"} from the '${this._cacheName}' cache.`);
+          logger.log(`Expired the following ${urlsExpired.length === 1 ? "URL" : "URLs"}:`);
+          urlsExpired.forEach((url) => logger.log(`    ${url}`));
+          logger.groupEnd();
+        } else {
+          logger.debug(`Cache expiration ran and found no entries to remove.`);
+        }
+      }
+      this._isRunning = false;
+      if (this._rerunRequested) {
+        this._rerunRequested = false;
+        dontWaitFor(this.expireEntries());
+      }
+    }
+    async updateTimestamp(url) {
+      if (true) {
+        finalAssertExports.isType(url, "string", {
+          moduleName: "workbox-expiration",
+          className: "CacheExpiration",
+          funcName: "updateTimestamp",
+          paramName: "url"
+        });
+      }
+      await this._timestampModel.setTimestamp(url, Date.now());
+    }
+    async isURLExpired(url) {
+      if (!this._maxAgeSeconds) {
+        if (true) {
+          throw new WorkboxError(`expired-test-without-max-age`, {
+            methodName: "isURLExpired",
+            paramName: "maxAgeSeconds"
+          });
+        }
+        return false;
+      } else {
+        const timestamp = await this._timestampModel.getTimestamp(url);
+        const expireOlderThan = Date.now() - this._maxAgeSeconds * 1e3;
+        return timestamp !== void 0 ? timestamp < expireOlderThan : true;
+      }
+    }
+    async delete() {
+      this._rerunRequested = false;
+      await this._timestampModel.expireEntries(Infinity);
+    }
+  };
+  var ExpirationPlugin = class {
+    constructor(config = {}) {
+      this.cachedResponseWillBeUsed = async ({ event, request, cacheName, cachedResponse }) => {
+        if (!cachedResponse) {
+          return null;
+        }
+        const isFresh = this._isResponseDateFresh(cachedResponse);
+        const cacheExpiration = this._getCacheExpiration(cacheName);
+        dontWaitFor(cacheExpiration.expireEntries());
+        const updateTimestampDone = cacheExpiration.updateTimestamp(request.url);
+        if (event) {
+          try {
+            event.waitUntil(updateTimestampDone);
+          } catch (error) {
+            if (true) {
+              if ("request" in event) {
+                logger.warn(`Unable to ensure service worker stays alive when updating cache entry for '${getFriendlyURL(event.request.url)}'.`);
+              }
+            }
+          }
+        }
+        return isFresh ? cachedResponse : null;
+      };
+      this.cacheDidUpdate = async ({ cacheName, request }) => {
+        if (true) {
+          finalAssertExports.isType(cacheName, "string", {
+            moduleName: "workbox-expiration",
+            className: "Plugin",
+            funcName: "cacheDidUpdate",
+            paramName: "cacheName"
+          });
+          finalAssertExports.isInstance(request, Request, {
+            moduleName: "workbox-expiration",
+            className: "Plugin",
+            funcName: "cacheDidUpdate",
+            paramName: "request"
+          });
+        }
+        const cacheExpiration = this._getCacheExpiration(cacheName);
+        await cacheExpiration.updateTimestamp(request.url);
+        await cacheExpiration.expireEntries();
+      };
+      if (true) {
+        if (!(config.maxEntries || config.maxAgeSeconds)) {
+          throw new WorkboxError("max-entries-or-age-required", {
+            moduleName: "workbox-expiration",
+            className: "Plugin",
+            funcName: "constructor"
+          });
+        }
+        if (config.maxEntries) {
+          finalAssertExports.isType(config.maxEntries, "number", {
+            moduleName: "workbox-expiration",
+            className: "Plugin",
+            funcName: "constructor",
+            paramName: "config.maxEntries"
+          });
+        }
+        if (config.maxAgeSeconds) {
+          finalAssertExports.isType(config.maxAgeSeconds, "number", {
+            moduleName: "workbox-expiration",
+            className: "Plugin",
+            funcName: "constructor",
+            paramName: "config.maxAgeSeconds"
+          });
+        }
+      }
+      this._config = config;
+      this._maxAgeSeconds = config.maxAgeSeconds;
+      this._cacheExpirations = /* @__PURE__ */ new Map();
+      if (config.purgeOnQuotaError) {
+        registerQuotaErrorCallback(() => this.deleteCacheAndMetadata());
+      }
+    }
+    _getCacheExpiration(cacheName) {
+      if (cacheName === cacheNames.getRuntimeName()) {
+        throw new WorkboxError("expire-custom-caches-only");
+      }
+      let cacheExpiration = this._cacheExpirations.get(cacheName);
+      if (!cacheExpiration) {
+        cacheExpiration = new CacheExpiration(cacheName, this._config);
+        this._cacheExpirations.set(cacheName, cacheExpiration);
+      }
+      return cacheExpiration;
+    }
+    _isResponseDateFresh(cachedResponse) {
+      if (!this._maxAgeSeconds) {
+        return true;
+      }
+      const dateHeaderTimestamp = this._getDateHeaderTimestamp(cachedResponse);
+      if (dateHeaderTimestamp === null) {
+        return true;
+      }
+      const now = Date.now();
+      return dateHeaderTimestamp >= now - this._maxAgeSeconds * 1e3;
+    }
+    _getDateHeaderTimestamp(cachedResponse) {
+      if (!cachedResponse.headers.has("date")) {
+        return null;
+      }
+      const dateHeader = cachedResponse.headers.get("date");
+      const parsedDate = new Date(dateHeader);
+      const headerTime = parsedDate.getTime();
+      if (isNaN(headerTime)) {
+        return null;
+      }
+      return headerTime;
+    }
+    async deleteCacheAndMetadata() {
+      for (const [cacheName, cacheExpiration] of this._cacheExpirations) {
+        await self.caches.delete(cacheName);
+        await cacheExpiration.delete();
+      }
+      this._cacheExpirations = /* @__PURE__ */ new Map();
+    }
+  };
   self.addEventListener("fetch", (e) => {
     console.log("Add custom logic!");
   });
-  var _manifest2 = Object.assign(deserializeManifest({ "routes": [{ "file": "", "links": ["assets/asset.3211c58f.css"], "scripts": [], "routeData": { "type": "page", "pattern": "^\\/$", "segments": [], "params": [], "component": "src/pages/index.astro", "pathname": "/" } }, { "file": "", "links": [], "scripts": [], "routeData": { "type": "endpoint", "pattern": "^\\/networkonly-endpoint$", "segments": [[{ "content": "networkonly-endpoint", "dynamic": false, "spread": false }]], "params": [], "component": "src/pages/networkonly-endpoint.js", "pathname": "/networkonly-endpoint" } }, { "file": "", "links": [], "scripts": [], "routeData": { "type": "endpoint", "pattern": "^\\/foo$", "segments": [[{ "content": "foo", "dynamic": false, "spread": false }]], "params": [], "component": "src/pages/foo.js", "pathname": "/foo" } }], "markdown": { "mode": "mdx", "drafts": false, "syntaxHighlight": "shiki", "shikiConfig": { "langs": [], "theme": "github-dark", "wrap": false }, "remarkPlugins": [], "rehypePlugins": [] }, "pageMap": null, "renderers": [], "entryModules": { "\0@astrojs-ssr-virtual-entry": "entry.mjs", "\0astro-swsr-virtual-module-pages": "entry2.mjs", "\0astro-swsr-virtual-module-sw": "entry3.mjs", "astro:scripts/before-hydration.js": "data:text/javascript;charset=utf-8,//[no before-hydration script]" }, "assets": ["/favicon.ico"] }), {
+  registerRoute2(/^https:\/\/fonts\.googleapis\.com/, new StaleWhileRevalidate({
+    cacheName: "google-fonts-stylesheets"
+  }));
+  registerRoute2(/^https:\/\/fonts\.gstatic\.com/, new CacheFirst({
+    cacheName: "google-fonts-webfonts",
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      }),
+      new ExpirationPlugin({
+        maxAgeSeconds: 60 * 60 * 24 * 365,
+        maxEntries: 30
+      })
+    ]
+  }));
+  var _manifest2 = Object.assign(deserializeManifest({ "routes": [{ "file": "", "links": ["assets/asset.3211c58f.css"], "scripts": [], "routeData": { "type": "page", "pattern": "^\\/$", "segments": [], "params": [], "component": "src/pages/index.astro", "pathname": "/" } }, { "file": "", "links": [], "scripts": [], "routeData": { "type": "endpoint", "pattern": "^\\/networkonly-endpoint$", "segments": [[{ "content": "networkonly-endpoint", "dynamic": false, "spread": false }]], "params": [], "component": "src/pages/networkonly-endpoint.js", "pathname": "/networkonly-endpoint" } }, { "file": "", "links": [], "scripts": [], "routeData": { "type": "endpoint", "pattern": "^\\/foo$", "segments": [[{ "content": "foo", "dynamic": false, "spread": false }]], "params": [], "component": "src/pages/foo.js", "pathname": "/foo" } }], "markdown": { "mode": "mdx", "drafts": false, "syntaxHighlight": "shiki", "shikiConfig": { "langs": [], "theme": "github-dark", "wrap": false }, "remarkPlugins": [], "rehypePlugins": [] }, "pageMap": null, "renderers": [], "entryModules": { "\0@astrojs-ssr-virtual-entry": "entry.mjs", "\0astro-swsr-virtual-module-pages": "entry2.mjs", "\0astro-swsr-virtual-module-sw": "entry3.mjs", "astro:scripts/before-hydration.js": "data:text/javascript;charset=utf-8,//[no before-hydration script]" }, "assets": ["/avatar.png", "/favicon.ico"] }), {
     pageMap,
     renderers
   });
