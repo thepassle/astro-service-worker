@@ -93,8 +93,8 @@ const _manifest = Object.assign(_deserializeManifest('${MANIFEST_REPLACE}'), {
   renderers: _renderers
 });
 
-const _args = ${adapter.args ? JSON.stringify(adapter.args) : '{}'};
-start(_manifest, _args);
+self._args = ${adapter.args ? JSON.stringify(adapter.args) : '{}'}
+start(_manifest, self._args);
 `;
       }
     },

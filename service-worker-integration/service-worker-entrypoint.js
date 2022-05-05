@@ -3,9 +3,6 @@ import { precacheAndRoute } from 'workbox-precaching';
 import { clientsClaim } from 'workbox-core';
 
 self.__WB_DISABLE_DEV_LOGS = true;
-self.skipWaiting();
-clientsClaim();
-
 precacheAndRoute(self.__WB_MANIFEST);
 
 /**
@@ -18,6 +15,10 @@ function createExports() {}
 
 function start(manifest, args) {
   const app = new App(manifest)
+
+  args.skipWaiting && self.skipWaiting();
+  args.clientsClaim && clientsClaim();
+
   self.addEventListener('fetch', async (event) => {
     const match = app.match(event.request);
     

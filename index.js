@@ -43,7 +43,10 @@ export default function serviceWorker(options) {
             shim: options?.shim || [],
             networkOnly: options?.networkOnly,
             swSrc: options?.swSrc,
-            adapter: getAdapter(),
+            adapter: getAdapter({
+              clientsClaim: options?.clientsClaim ?? true,
+              skipWaiting: options?.skipWaiting ?? true,
+            }),
           })
         );
 

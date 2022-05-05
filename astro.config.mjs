@@ -11,6 +11,8 @@ export default defineConfig({
     serviceWorker({
       /** Provide custom service worker logic */
       swSrc: 'user-sw.js',
+      // clientsClaim: false,
+      // skipWaiting: false,
       /** 
        * Excludes specific pages from the service worker bundle, and forces them to always go to the network
        * This is useful for server-only specific code, for example database connections

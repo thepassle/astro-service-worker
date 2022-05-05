@@ -61,6 +61,10 @@ export default defineConfig({
        */
       workbox: {},
 
+      /** Both default to true, useful if you want to provide a custom installation experience */
+      skipWaiting: false,
+      clientsClaim: false,
+
       /** 
        * Configure esbuild options 
        */
