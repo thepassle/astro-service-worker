@@ -18,7 +18,7 @@ export default defineConfig({
       networkOnly: ['/networkonly'],
       /** Configure workbox options */
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png}"]
+        globPatterns: ["**/*.{js,css,html,png,ico}"]
       },
       /** Configure esbuild options */
       esbuild: {},
