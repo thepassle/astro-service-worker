@@ -1,27 +1,26 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+const posts = (await Astro.glob('../blogs/*.md')).sort((a,b) => a.frontmatter.id - b.frontmatter.id);
 ---
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>Astro</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500" rel="stylesheet">
-
-		<style is:global>
-			img {
-				width: 200px;
-			}
-		</style>
-	</head>
-	<body>
-		<h1>Astro</h1>
-		<ul>
-			<li><a href="/about">about</a></li>
-			<li><a href="/networkonly">networkonly</a></li>
-		</ul>
+<Layout>
+	<div class="profile">
 		<img src="/avatar.png" alt="avatar"/>
-	</body>
-</html>
+		<div>
+			<p>Pascal Schilp is a software developer based in the Netherlands, who currently works for ING.<br/><br/>In his free time, he enjoys hacking on hobby projects, playing phasmaphobia or PUBG and spending time with his partner.</p>
+			<ul>
+				<li><a href="/about">about</a></li>
+				<li><a href="/networkonly">networkonly</a></li>
+			</ul>
+		</div>
+	</div>
+	<h2>Blogs</h2>
+	<div>
+	{posts.map((post) => (
+		<article>
+			<h3>{post.frontmatter.title}</h3>
+			<p>{post.frontmatter.description}</p>
+			<a href={`blogs/${post.frontmatter.id}`}>Read more</a>
+		</article>
+	))}
+	</div>
+</Layout>

@@ -24,7 +24,8 @@ export default function serviceWorker(options) {
 
         /** Add SW registration script */
         if(command === 'build') {
-          injectScript({stage: 'head-inline', content: options?.swScript ?? SW_SCRIPT});
+          // @TODO https://github.com/withastro/astro/issues/3298
+          injectScript('head-inline', options?.swScript ?? SW_SCRIPT);
         }
       },
       "astro:config:done": ({ config }) => {
@@ -54,7 +55,6 @@ export default function serviceWorker(options) {
 			},
       'astro:build:ssr': (ssr) => {
         manifest = ssr.manifest;
-        manifest.routes = manifest.routes.filter(({routeData}) => !options.networkOnly.includes(routeData.pathname));
       },
       "astro:build:done": async () => {
         const globDirectory = cfg.outDir.pathname;
@@ -63,7 +63,10 @@ export default function serviceWorker(options) {
         const swInFile = fs.readFileSync(swInPath, 'utf-8');
         const swOutPath = cfg.outDir.pathname;
         const swOutFile = path.join(swOutPath, SW_FILE_NAME);
-      
+
+        /** Filter out network only routes */
+        manifest.routes = manifest.routes.filter(({routeData}) => !options.networkOnly.includes(routeData.pathname));
+
         /** Add SSR Manifest */
         fs.writeFileSync(
           swInPath, 

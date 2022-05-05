@@ -2,6 +2,7 @@ import { App } from 'astro/app';
 import { precacheAndRoute } from 'workbox-precaching';
 import { clientsClaim } from 'workbox-core';
 
+self.__WB_DISABLE_DEV_LOGS = true;
 self.skipWaiting();
 clientsClaim();
 
@@ -21,17 +22,7 @@ function start(manifest, args) {
     const match = app.match(event.request);
     
     if(event.request.mode === 'navigate') {
-      if(match) {
-        /** Match routes that we want to force to go to the network */
-        // for(const route of args.networkOnly) {
-        //   const pattern = new URLPattern({pathname: route});
-        //   const match = pattern.exec(event.request.url);
-
-        //   if(match) {
-        //     return event.respondWith(fetch(event.request));
-        //   }
-        // }
-    
+      if(match) {   
         /** Render routes */
         const response = await app.render(event.request);
         return event.respondWith(response);

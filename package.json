@@ -7,7 +7,8 @@
     "dev": "astro dev --experimental-integrations",
     "start": "astro dev --experimental-integrations",
     "build": "astro build --experimental-integrations",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy": "npm run build && netlify deploy --prod --dir=netlify"
   },
   "devDependencies": {
     "@astrojs/netlify": "^0.3.3",

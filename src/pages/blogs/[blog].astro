@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+const { blog } = Astro.params;
+
+const posts = await Astro.glob('../../blogs/*.md');
+const blogpost = posts.find(post => post.frontmatter.id === +blog);
+const Post = blogpost.Content;
+---
+<Layout>
+	<h1>{blogpost.frontmatter.title}</h1>
+  <Post/>
+</Layout>
