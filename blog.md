@@ -52,7 +52,7 @@ While from a technical point of view this is _really_ exciting, I can't help but
 
 I've recently been hacking on [Astro](https://astro.build) SSR projects a bunch, and was looking into creating a Cloudflare adapter to deploy my Astro SSR application to a Cloudflare environment. It was when I was reading up on Cloudflare workers that I was reminded of this [chat](https://cloudflare.tv/event/6ZJ5mEjrgcnCtBXBsUtyqV) by Jeff Posnick and Luke Edwards about his blog and the architecture laid out earlier in this blogpost, and it made me wonder; if I'm able to deploy Astro on an environment thats so similar to a service worker... **Why can't I run Astro in an actual service worker?**
 
-So I started hacking on some code and, well, it turns out you totally can. In this example, you can see a real Astro SSR application run by a service worker. This is hugely exciting for several reasons:
+So I started hacking on some code and, well, it turns out you totally can. In this example, you can see a real Astro SSR application run by a service worker. This is exciting for several reasons:
 
 🚨 @TODO VIDEO 🚨
 
@@ -62,7 +62,7 @@ So I started hacking on some code and, well, it turns out you totally can. In th
 - Huge performance benefits
 - It's a progressive enhancement
 
-But most of all, it may mean we're super close to getting an excellent developer experience! Consider the following example:
+But most of all, it may mean we're getting super close to having an excellent developer experience! Astro may very well be the first framework capable of delivering us developer experiences like the following:
 
 `/blog/[id].astro`:
 ```astro
@@ -80,9 +80,9 @@ const { id } = Astro.params;
 </html>
 ```
 
-Wouldn't this be amazing? This code could run both on the server, as well as in a service worker. ⚠️ _However!_ As cool as this would be, we're not quite there _yet_. There are a few changes to be done in Astro to make this a reality, which I'll get into later in this blogpost, but spoiler alert; They're already in the works, and not far off.
+Wouldn't this be amazing? This code could run both on the server, as well as in a service worker. _However!_ As cool as this would be, we're not quite there. Currently, Astro doesn't yet support streaming responses, we'll get into that in a little bit, but for now dream along with me for a minute.
 
-What would happen in this code snippet is the following: On initial visit, the server renders this page, much like in Jeff's blog example. After the initial visit, the service worker gets installed and takes over, which means that from now on, _the exact same_ code can get rendered by the service worker in the browser instead, and deliver responses immediately.
+What would happen in the code snippet is the following: On initial visit, the server renders this page, much like in Jeff's blog example. The service worker then gets installed and can take control of requests, which means that from then on, _the exact same_ code can get rendered by the service worker in the browser instead, and deliver responses immediately.
 
 Furthermore, in this example the `<Header/>` and `<Sidemenu/>` are static components and can be streamed immediately. The `fetch` promise returns a response, which body is... You guessed it, a stream! This means the browser can already start rendering the header (which may also start download other assets), render the sidemenu, and then immediately start streaming the result of the `fetch` to the browser.
 
@@ -114,6 +114,16 @@ Imagine if we visited a URL with an `id` that doesnt exist. If the user doesn't 
 
 However, if the user _does_ have a service worker installed already, it could have precached the `'/404.html'` during installation, and just load it instantly from the cache.
 
+You can probably even imagine some helpers like:
+```js
+<Header/>
+{cacheFirst(`/blog/${id}.html`)}
+{staleWhileRevalidate(`/blog/${id}.html`)}
+{networkFirst(`/blog/${id}.html`)}
+<Footer/>
+```
+
+
 ### Server-first, server-only, service-worker-first, service-worker-only
 
 When service-worker-izing your Astro applications, you have to keep in mind that the Astro code you write in your Astro frontmatter should now also be able to run in the browser. This means that you can't make use of any commonjs dependencies, or node built-ins, like `'fs'`, for example. However, it could be the case that you have need for some server-only code, like for example accessing a database, or webhooks, or redirect callbacks, or whatever. In this case, you could exclude those endpoints from the output service worker bundle.
@@ -123,9 +133,21 @@ This means that you can have an entire fullstack codebase with: Server-first, se
 
 ## The downsides
 
-### Not quite yet
+### Not quite there yet
 
-Currently, Astro's responses are not streamed **yet**, however, [I've been told](https://twitter.com/n_moore/status/1521527267658276865?s=20&t=xlxL7wxeqg9zTc8m23Hq0w) it's already in the works and streams have been the end goal since day one. When you consider that Astro components, once compiled, are just async iterators, this future doesn't seem far off:
+Currently, Astro's responses are not streamed **yet**. [Nate](https://twitter.com/n_moore), one of Astro's core maintainers, did however [mention](https://twitter.com/n_moore/status/1521527267658276865?s=20&t=xlxL7wxeqg9zTc8m23Hq0w) that:
+
+> The good news about Astro is that streaming has been the end goal since day one! We don’t need any architecture changes to support it—Astro components are just async iterators. We’ve mostly been waiting for SSR APIs to stabilize before exposing streaming.
+
+Consider the following code snippet from Astro's source code:
+
+```js
+export async function render(htmlParts: TemplateStringsArray, ...expressions: any[]) {
+  return new AstroComponent(htmlParts, expressions);
+}
+```
+
+Where an `AstroComponent` looks like:
 
 ```js
 class AstroComponent {
@@ -148,7 +170,7 @@ class AstroComponent {
 }
 ```
 
-This would even allow for for [promises and iterables](https://github.com/withastro/rfcs/discussions/188#discussioncomment-2681215) in Astro expressions, e.g.:
+As Nate said, just an async iterator. This means that it could potentially even allow for [promises and iterables](https://github.com/withastro/rfcs/discussions/188#discussioncomment-2681215) in Astro expressions, e.g.:
 
 ```js
 ---
@@ -174,6 +196,8 @@ Or the example with `fetch` we saw earlier in this post:
 <Footer/>
 ```
 
+There's currently some discussion ongoing in this [RFC discussion](https://github.com/withastro/rfcs/discussions/188) on the Astro repository. If this is a future that you're excited for, please do leave a comment to signal some interest to the maintainers!
+
 ### Bundlesize
 
 The other downside is bundlesize. Admittedly, Astro's bundle when run in a service worker is... large. However, I've not done too much experimentation here yet, but it seems like there's a lot of room for improvement on bundlesize.
@@ -181,7 +205,7 @@ The other downside is bundlesize. Admittedly, Astro's bundle when run in a servi
 
 ## Astro-service-worker
 
-While streaming responses in Astro may be a ways off yet, I did turn all of this into an Astro Integration that you can already use today: `astro-service-worker`. This integration will take your Astro SSR project, and create a service worker build for it.
+While streaming responses in Astro may be a ways off yet, I did turn all of this into an Astro Integration that you can already use today: [`astro-service-worker`](https://github.com/thepassle/astro-service-worker). This integration will take your Astro SSR project, and create a service worker build for it.
 
 Getting started is easy, install the dependency:
 
