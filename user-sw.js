@@ -8,7 +8,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
  * You can configure this via the `swSrc` configuration property
  */
 self.addEventListener('fetch', (e) => {
-  console.log('Add custom logic!');
+  console.log('Custom logging logic: ', e.request.url);
 });
 
 /* Cache the Google Fonts stylesheets with a stale-while-revalidate strategy. */
