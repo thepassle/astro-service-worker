@@ -48,7 +48,7 @@ const prod = import.meta.env.ENV === 'prod';
 				padding-left: 40px;
 			}
 
-			ul {
+			.links {
 				display: flex;
 				list-style: none;
 				padding: 0;
@@ -81,6 +81,16 @@ const prod = import.meta.env.ENV === 'prod';
 			h3 { 
 				font-size: 1.3em;
 				margin: 0;
+			}
+
+			@media(max-width: 600px) {
+				.profile {
+					flex-direction: column;
+				}
+
+				.profile div {
+					padding-left: 20px;
+				}
 			}
 		</style>
 	</head>
