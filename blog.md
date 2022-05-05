@@ -52,7 +52,7 @@ While from a technical point of view this is _really_ exciting, I can't help but
 
 I've recently been hacking on [Astro](https://astro.build) SSR projects a bunch, and was looking into creating a Cloudflare adapter to deploy my Astro SSR application to a Cloudflare environment. It was when I was reading up on Cloudflare workers that I was reminded of this [chat](https://cloudflare.tv/event/6ZJ5mEjrgcnCtBXBsUtyqV) by Jeff Posnick and Luke Edwards about his blog and the architecture laid out earlier in this blogpost, and it made me wonder; if I'm able to deploy Astro on an environment thats so similar to a service worker... **Why can't I run Astro in an actual service worker?**
 
-So I got hacking and, well, it turns out you totally can. In this example, you can see a real Astro SSR application run by a service worker. This is hugely exciting for several reasons:
+So I started hacking on some code and, well, it turns out you totally can. In this example, you can see a real Astro SSR application run by a service worker. This is hugely exciting for several reasons:
 
 🚨 @TODO VIDEO 🚨
 
@@ -62,7 +62,7 @@ So I got hacking and, well, it turns out you totally can. In this example, you c
 - Huge performance benefits
 - It's a progressive enhancement
 
-But most of all, it means we get an excellent developer experience! Consider the following example:
+But most of all, it may mean we're super close to getting an excellent developer experience! Consider the following example:
 
 `/blog/[id].astro`:
 ```astro
@@ -114,11 +114,11 @@ Imagine if we visited a URL with an `id` that doesnt exist. If the user doesn't 
 
 However, if the user _does_ have a service worker installed already, it could have precached the `'/404.html'` during installation, and just load it instantly from the cache.
 
-### Server-first, server-only, service worker
+### Server-first, server-only, service-worker-first, service-worker-only
 
 When service-worker-izing your Astro applications, you have to keep in mind that the Astro code you write in your Astro frontmatter should now also be able to run in the browser. This means that you can't make use of any commonjs dependencies, or node built-ins, like `'fs'`, for example. However, it could be the case that you have need for some server-only code, like for example accessing a database, or webhooks, or redirect callbacks, or whatever. In this case, you could exclude those endpoints from the output service worker bundle.
 
-This means that you can have an entire fullstack codebase with: Server-first, server-only, and service worker code **in the same project**. Additionally, the service worker is entirely a progressive enhancement. If your user uses a browser that doesn't support service workers, the server will still render your app just fine.
+This means that you can have an entire fullstack codebase with: Server-first, server-only, service-worker-first, and service-worker-only code **in the same project**. Additionally, the service worker is entirely a progressive enhancement. If your user uses a browser that doesn't support service workers, the server will still render your app just fine.
 
 
 ## The downsides
