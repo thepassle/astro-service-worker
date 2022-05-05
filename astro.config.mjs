@@ -30,7 +30,7 @@ export default defineConfig({
        * Provide a bare module specifier to a custom shim file. This may be useful when integrating third party
        * SSR integrations, which may need to shim certain API's in a service worker environment
        */
-      shim: ['my-custom-integration/shim.js']
+      // shim: ['my-custom-integration/shim.js']
     }),
   ]
 });

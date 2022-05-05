@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import { pagesVirtualModuleId } from './vite-plugin-pages.js';
 import { MANIFEST_REPLACE, SW_FILE_NAME } from './constants.js';
 
 const virtualSwModuleId = 'astro-swsr-virtual-module-sw';
