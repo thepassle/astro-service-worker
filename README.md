@@ -45,9 +45,7 @@ export default defineConfig({
 export default defineConfig({
   integrations: [
     serviceWorker({
-      /** 
-       * Provide custom service worker logic 
-       */
+      /** Provide custom service worker logic */
       swSrc: 'user-sw.js',
 
       /** 
@@ -56,28 +54,20 @@ export default defineConfig({
        */
       networkOnly: ['/networkonly-astro'],
 
-      /** 
-       * Configure workbox options 
-       */
+      /** Configure workbox options */
       workbox: {},
 
       /** Both default to true, useful if you want to provide a custom installation experience */
       skipWaiting: false,
       clientsClaim: false,
 
-      /** 
-       * Configure esbuild options 
-       */
+      /** Configure esbuild options */
       esbuild: {},
 
-      /** 
-       * Enables minifcation for esbuild, defaults to true 
-       */
+      /** Enables minifcation for esbuild, defaults to true */
       minify: false,
 
-      /** 
-       * Override the default service worker registration and update script 
-       */
+      /** Override the default service worker registration and update script */
       swScript: '',
 
       /**
