@@ -135,7 +135,7 @@ This means that you can have an entire fullstack codebase with: Server-first, se
 
 ### Not quite there yet
 
-Currently, Astro's responses are not streamed **yet**. [Nate](https://twitter.com/n_moore), one of Astro's core maintainers, did however [mention](https://twitter.com/n_moore/status/1521527267658276865?s=20&t=xlxL7wxeqg9zTc8m23Hq0w) that:
+Currently, Astro's responses are not streamed _yet_. [Nate](https://twitter.com/n_moore), one of Astro's core maintainers, did however [mention](https://twitter.com/n_moore/status/1521527267658276865?s=20&t=xlxL7wxeqg9zTc8m23Hq0w) that:
 
 > The good news about Astro is that streaming has been the end goal since day one! We don’t need any architecture changes to support it—Astro components are just async iterators. We’ve mostly been waiting for SSR APIs to stabilize before exposing streaming.
 
@@ -228,6 +228,10 @@ export default defineConfig({
 ```
 
 Do note that the code you write in your Astro frontmatter will now also need to run in the browser/service-worker. This means that you will not be able to make use of Nodejs built-in dependencies, or other commonjs libraries. If you still want to write server-only code, you can use the [`networkOnly`](#network-only) configuration option.
+
+### Demo
+
+You can find an example of a small app that uses `astro-service-worker` in this [demo](https://astro-sw-demo.netlify.app/), and you can find the source code for the demo [here](https://github.com/thepassle/astro-service-worker).
 
 ### Network-only
 
