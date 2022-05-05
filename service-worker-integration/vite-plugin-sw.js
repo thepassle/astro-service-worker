@@ -32,18 +32,66 @@ export function vitePluginSW(options) {
       }
     },
     load(id) {
-      const adapter = options.adapter;
-
+      const { 
+        networkOnly, 
+        renderers, 
+        pages, 
+        adapter,
+        shim
+      } = options;
+      
       if (id === resolvedVirtualSwModuleId) {
-        return `import { start } from '${adapter.serverEntrypoint}';
-import * as _main from '${pagesVirtualModuleId}';
+        let i = 0;
+        const rendererImports = [];
+        const pagesImports = [];
+        let importMap = '';
+        let rendererItems = '';
+
+        /**
+         * Construct renderer imports, these need to be first in the module because renderers may
+         * add custom shims that need to be loaded before importing pages
+         * 
+         * e.g. a `page` may use an API that a `renderer` needs to shim
+         */
+        for (const renderer of renderers) {
+          const variable = `_renderer${i}`;
+          rendererImports.push(`import ${variable} from '${renderer.serverEntrypoint}';`);
+          rendererItems += `Object.assign(${JSON.stringify(renderer)}, { ssr: ${variable} }),`;
+          i++;
+        }
+
+        i = 0;
+        
+        /**
+         * Construct imports for pages
+         */
+        for (const page of pages.values()) {
+          /** Exclude networkOnly routes from the build */
+          if(networkOnly.includes(page.route.pathname)) continue;
+
+          const variable = `_page${i}`;
+          pagesImports.push(`import * as ${variable} from '${page.moduleSpecifier}';`);
+          importMap += `['${page.component}', ${variable}],`;
+          i++;
+        }
+
+        /**
+         * Create the service worker module
+         */
+        return `${shim.join('\n')}
+${rendererImports.join('\n')}
+${pagesImports.join('\n')}
+import { start } from '${adapter.serverEntrypoint}';
 import { deserializeManifest as _deserializeManifest } from 'astro/app';
 
 ${customServiceWorkerCode}
 
+const _pageMap = new Map([${importMap}]);
+const _renderers = [${rendererItems}];
+
 const _manifest = Object.assign(_deserializeManifest('${MANIFEST_REPLACE}'), {
-  pageMap: _main.pageMap,
-  renderers: _main.renderers
+  pageMap: _pageMap,
+  renderers: _renderers
 });
 
 const _args = ${adapter.args ? JSON.stringify(adapter.args) : '{}'};

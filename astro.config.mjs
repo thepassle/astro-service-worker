@@ -1,11 +1,13 @@
 import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
+import customElements from 'custom-elements-ssr/astro.js';
 import serviceWorker from './index.js';
 
 // https://astro.build/config
 export default defineConfig({
   adapter: netlify(),
   integrations: [
+    customElements(),
     serviceWorker({
       /** Provide custom service worker logic */
       swSrc: 'user-sw.js',

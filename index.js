@@ -4,7 +4,6 @@ import fs from 'fs';
 import { injectManifest } from 'workbox-build';
 import { build } from "esbuild";
 
-import { vitePluginPages } from './service-worker-integration/vite-plugin-pages.js';
 import { vitePluginSW } from './service-worker-integration/vite-plugin-sw.js';
 import { getAdapter } from './service-worker-integration/adapter.js';
 
@@ -32,21 +31,21 @@ export default function serviceWorker(options) {
         cfg = config;
       },
       'astro:build:setup': async ({ vite, pages }) => { 
-        vite.plugins.push(vitePluginPages({ 
-          pages,
-          renderers,
-          networkOnly: options.networkOnly,
-        }));
-
         /** 
          * This plugin should be the last, even after vite-plugin-ssr,
          * otherwise the main Integration (netlify, firebase, etc) function will be output as `entry2.mjs`,
          * and then the created redirects might not work correctly (e.g. they'll point to `entry.mjs`, which is now the SW)
          */
-        vite.plugins.push(vitePluginSW({ 
-          swSrc: options?.swSrc,
-          adapter: getAdapter(),
-        }));
+        vite.plugins.push(
+          vitePluginSW({ 
+            pages,
+            renderers,
+            shim: options?.shim || [],
+            networkOnly: options?.networkOnly,
+            swSrc: options?.swSrc,
+            adapter: getAdapter(),
+          })
+        );
 
         swInDir = vite.build.outDir;
       },

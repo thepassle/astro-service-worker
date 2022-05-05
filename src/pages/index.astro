@@ -1,8 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../components/my-el.js';
+
 const posts = (await Astro.glob('../blogs/*.md')).sort((a,b) => a.frontmatter.id - b.frontmatter.id);
 ---
 <Layout>
+	<generic-tabs client:visible selected="1" label="people">
+		<button slot="tab">About</button>
+		<button slot="tab">Contact</button>
+
+		<div slot="panel">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+		</div>
+
+		<div slot="panel">
+			<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+		</div>
+	</generic-tabs>
 	<div class="profile">
 		<img src="/avatar.png" alt="avatar"/>
 		<div>

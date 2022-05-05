@@ -119,6 +119,59 @@ self.addEventListener('fetch', (e) => {
 });
 ```
 
+Note that you can also use modules in your custom service worker logic:
+
+```js
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate } from 'workbox-strategies';
+
+registerRoute(
+  /^https:\/\/fonts\.googleapis\.com/,
+  new StaleWhileRevalidate({
+    cacheName: 'google-fonts-stylesheets',
+  })
+);
+```
+
+## Combine with other integrations
+
+You can also combine this integration with other integrations.
+
+```js
+import { defineConfig } from 'astro/config';
+import netlify from '@astrojs/netlify';
+import customElements from 'custom-elements-ssr/astro.js';
+import serviceWorker from './index.js';
+
+export default defineConfig({
+  adapter: netlify(),
+  integrations: [
+    customElements(),
+    serviceWorker()
+  ]
+});
+```
+
+## Shim
+
+It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. Whatever code you provide here will be put at the very top of the service worker module before bundling.
+
+```js
+import { defineConfig } from 'astro/config';
+import netlify from '@astrojs/netlify';
+import serviceWorker from './index.js';
+
+export default defineConfig({
+  adapter: netlify(),
+  integrations: [
+    serviceWorker({
+      shim: ["import 'my-custom-integration/shim.js';"]
+    })
+  ]
+});
+```
+
+
 ## Network-only
 
 It could be the case that you would like to make use of some server-only endpoints or pages, perhaps for creating database connections, or other things that depend on Nodejs built-in modules that are not available in the browser. If that is the case, you can specify which page you'd like to exclude from the service worker bundle:
