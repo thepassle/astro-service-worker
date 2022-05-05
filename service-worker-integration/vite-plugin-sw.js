@@ -78,7 +78,7 @@ export function vitePluginSW(options) {
         /**
          * Create the service worker module
          */
-        return `${shim.join('\n')}
+        return `${shim.map(shim => `import '${shim}'`).join('\n')}
 ${rendererImports.join('\n')}
 ${pagesImports.join('\n')}
 import { start } from '${adapter.serverEntrypoint}';

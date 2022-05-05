@@ -74,7 +74,13 @@ export default defineConfig({
       /** 
        * Override the default service worker registration and update script 
        */
-      swScript: ''
+      swScript: '',
+
+      /**
+       * Provide a bare module specifier to a custom shim file. This may be useful when integrating third party
+       * SSR integrations, which may need to shim certain API's in a service worker environment
+       */
+      shim: ['my-custom-integration/shim.js']
     }),
   ]
 });
@@ -154,7 +160,7 @@ export default defineConfig({
 
 ## Shim
 
-It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. Whatever code you provide here will be put at the very top of the service worker module before bundling.
+It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. The imports you provide here will be put at the very top of the service worker module before bundling.
 
 ```js
 import { defineConfig } from 'astro/config';
@@ -165,7 +171,7 @@ export default defineConfig({
   adapter: netlify(),
   integrations: [
     serviceWorker({
-      shim: ["import 'my-custom-integration/shim.js';"]
+      shim: ['my-custom-integration/shim.js']
     })
   ]
 });
