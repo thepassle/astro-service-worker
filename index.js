@@ -93,7 +93,7 @@ export default function serviceWorker(options) {
           platform: 'browser',
           bundle: true,
           inject: [SHIM],
-          minify: options?.dev ?? true,
+          minify: options?.minify ?? true,
           ...(options?.esbuild ?? {})
         });
 

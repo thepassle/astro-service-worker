@@ -71,9 +71,9 @@ export default defineConfig({
       esbuild: {},
 
       /** 
-       * When set to true, enables minifcation for esbuild, defaults to true 
+       * Enables minifcation for esbuild, defaults to true 
        */
-      dev: false,
+      minify: false,
 
       /** 
        * Override the default service worker registration and update script 
