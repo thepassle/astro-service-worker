@@ -23,5 +23,5 @@ navigator.serviceWorker.addEventListener('controllerchange', async () => {
 });
 `;
 
-// @TODO: require.resolve('astro-service-worker/service-worker-integration/shim.js')
+// export const SHIM = require.resolve('astro-service-worker/service-worker-integration/shim.js');
 export const SHIM = `${process.cwd()}/service-worker-integration/shim.js`

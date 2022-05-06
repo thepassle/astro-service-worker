@@ -186,8 +186,17 @@ Or the example with `fetch` we saw earlier in this post:
 <Footer/>
 ```
 
-There's currently some discussion ongoing in this [RFC discussion](https://github.com/withastro/rfcs/discussions/188) on the Astro repository. If this is a future that you're excited for, please do leave a comment to signal some interest to the maintainers. There have also been other feature proposals that would make streaming responses impossible, like for example post-processing HTML, or the concept of a `<astro:head>` element, where a child component can append to the head. Both of these things are not compatible with streaming responses, so it's really important to voice your interest if this is something you'd be interested in.
+There's currently some discussion ongoing in this [RFC discussion](https://github.com/withastro/rfcs/discussions/188) on the Astro repository. If this is a future that you're excited for, please do leave a comment to signal some interest to the maintainers. There is a cost, however. There have also been other feature proposals that would make streaming responses impossible, like for example post-processing HTML, or the concept of a `<astro:head>` element, where a child component can append to the head. Both of these things are not compatible with streaming responses. Although, perhaps these features dont have to be mutually exclusive; maybe renderers could even be made configurable by Astro via the `astro.config.mjs`: 
 
+```js
+export default defineConfig({
+  ssr: {
+    output: 'stream'
+  }
+});
+```
+
+Much to think about and consider, but either way, please do check out the RFC discussion and leave your thoughts, or simply an upvote/emoji!
 ### Bundlesize
 
 The other downside is bundlesize. Admittedly, Astro's bundle when run in a service worker is... large. However, I've not done too much experimentation here yet, but it seems like there's a lot of room for improvement on bundlesize.
