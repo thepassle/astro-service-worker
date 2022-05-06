@@ -4,7 +4,7 @@ Server Side Rendering (SSR) seems to be all the rage. Hydration strategies are t
 
 Single Page Application Progressive Web App (whew) architecture has been [well established](https://developer.chrome.com/blog/app-shell/) by now; You build your application shell, precache your required assets, and fetch dynamic data that makes your app do what your app does. Additionally, Single Page Applications (SPA's) are usually relatively easy to PWA-ify _after_ they're already build.
 
-The same can't be said for Multi Page Applications (MPA's), however, for MPA's you really have to take any kind of offline-capabilities along in your architecture right from the start of your project. And I just can't help but feel there's currently no real good solution for PWA-ifying MPA's, that has an excellent developer experience, like so many JS frameworks, or SSR frameworks have. Static Site Generators don't seem to really be investing in this space a whole lot, either. In fact, there only a handful of solutions I could find for this kind of architecture at all!
+The same can't be said for Multi Page Applications (MPA's) however, for MPA's you really have to take any kind of offline-capabilities along in your architecture right from the start of your project. And I just can't help but feel there's currently no real good solution for PWA-ifying MPA's, that has an excellent developer experience, like so many JS frameworks, or SSR frameworks have. Static Site Generators don't seem to really be investing in this space a whole lot, either. In fact, there only a handful of solutions I could find for this kind of architecture at all!
 
 ## Service Workers on the Server
 
@@ -13,8 +13,6 @@ One of those solutions is made by the brilliant [Jeff Posnick](https://twitter.c
 When the user visits the blog for the first time, the Cloudflare Worker renders the page, and on the client side the service worker starts installing. When the service worker has installed, the service worker can take control of network requests, and serve responses itself; potentially omitting the server entirely, and delivering instant responses. 
 
 You can read all about how Jeff build his blog on, well, [his blog about it](https://jeffy.info/2021/07/17/sw-rendering.html), but it mainly comes down to: Streams.
-
-
 
 ### Stream Stitching
 
@@ -123,14 +121,6 @@ You can probably even imagine some helpers like:
 <Footer/>
 ```
 
-
-### Server-first, server-only, service-worker-first, service-worker-only
-
-When service-worker-izing your Astro applications, you have to keep in mind that the Astro code you write in your Astro frontmatter should now also be able to run in the browser. This means that you can't make use of any commonjs dependencies, or node built-ins, like `'fs'`, for example. However, it could be the case that you have need for some server-only code, like for example accessing a database, or webhooks, or redirect callbacks, or whatever. In this case, you could exclude those endpoints from the output service worker bundle.
-
-This means that you can have an entire fullstack codebase with: Server-first, server-only, service-worker-first, and service-worker-only code **in the same project**. Additionally, the service worker is entirely a progressive enhancement. If your user uses a browser that doesn't support service workers, the server will still render your app just fine.
-
-
 ## The downsides
 
 ### Not quite there yet
@@ -196,7 +186,7 @@ Or the example with `fetch` we saw earlier in this post:
 <Footer/>
 ```
 
-There's currently some discussion ongoing in this [RFC discussion](https://github.com/withastro/rfcs/discussions/188) on the Astro repository. If this is a future that you're excited for, please do leave a comment to signal some interest to the maintainers!
+There's currently some discussion ongoing in this [RFC discussion](https://github.com/withastro/rfcs/discussions/188) on the Astro repository. If this is a future that you're excited for, please do leave a comment to signal some interest to the maintainers. There have also been other feature proposals that would make streaming responses impossible, like for example post-processing HTML, or the concept of a `<astro:head>` element, where a child component can append to the head. Both of these things are not compatible with streaming responses, so it's really important to voice your interest if this is something you'd be interested in.
 
 ### Bundlesize
 
@@ -205,7 +195,7 @@ The other downside is bundlesize. Admittedly, Astro's bundle when run in a servi
 
 ## Astro-service-worker
 
-While streaming responses in Astro may be a ways off yet, I did turn all of this into an Astro Integration that you can already use today: [`astro-service-worker`](https://github.com/thepassle/astro-service-worker). This integration will take your Astro SSR project, and create a service worker build for it.
+While streaming responses in Astro may be a ways off yet, I did turn my service worker experimentation into an Astro Integration that you can already use today: [`astro-service-worker`](https://github.com/thepassle/astro-service-worker). This integration will take your Astro SSR project, and create a service worker build for it.
 
 Getting started is easy, install the dependency:
 
@@ -227,11 +217,16 @@ export default defineConfig({
 });
 ```
 
-Do note that the code you write in your Astro frontmatter will now also need to run in the browser/service-worker. This means that you will not be able to make use of Nodejs built-in dependencies, or other commonjs libraries. If you still want to write server-only code, you can use the [`networkOnly`](#network-only) configuration option.
-
 ### Demo
 
 You can find an example of a small app that uses `astro-service-worker` in this [demo](https://astro-sw-demo.netlify.app/), and you can find the source code for the demo [here](https://github.com/thepassle/astro-service-worker).
+
+### Server-first, server-only, service-worker-first, service-worker-only
+
+When service-worker-izing your Astro applications, you have to keep in mind that the Astro code you write in your Astro frontmatter should now also be able to run in the browser. This means that you can't make use of any commonjs dependencies, or node built-ins, like `'fs'`, for example. However, it could be the case that you have need for some server-only code, like for example accessing a database, or webhooks, or redirect callbacks, or whatever. In this case, you could exclude those endpoints from the output service worker bundle.
+
+This means that you can have an entire fullstack codebase with: Server-first, server-only, service-worker-first, and service-worker-only code **in the same project**. Additionally, the service worker is entirely a progressive enhancement. If your user uses a browser that doesn't support service workers, the server will still render your app just fine.
+
 
 ### Network-only
 
@@ -249,7 +244,7 @@ export default defineConfig({
 
 ### Customize Service Worker logic
 
-It could be the case that you need to extend the Service Worker to add custom logic. To do this, you can use the `swSrc` option.
+You can also extend the Service Worker and add your own custom logic. To do this, you can use the `swSrc` option.
 
 ```js
 export default defineConfig({
@@ -265,5 +260,24 @@ export default defineConfig({
 ```js
 self.addEventListener('fetch', (e) => {
   console.log('Custom logic!');
+});
+```
+
+### Combine with other integrations
+
+You can even combine this with other SSR integrations; if your components are SSR-able, they should also be SWSR-able! Do note however that there may be some differences in a traditional server environment, and a service worker. This means there may be additional things you need to shim.
+
+```js
+import { defineConfig } from 'astro/config';
+import netlify from '@astrojs/netlify';
+import customElements from 'custom-elements-ssr/astro.js';
+import serviceWorker from './index.js';
+
+export default defineConfig({
+  adapter: netlify(),
+  integrations: [
+    customElements(),
+    serviceWorker()
+  ]
 });
 ```
