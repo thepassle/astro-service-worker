@@ -1,6 +1,12 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
+// export const SHIM = `${process.cwd()}/service-worker-integration/shim.js`
+export const SHIM = require.resolve('astro-service-worker/service-worker-integration/shim.js');
+
+export const VIRTUAL_SW = 'astro-swsr-virtual-module';
+export const VIRTUAL_SW_RESOLVED = '\0' + VIRTUAL_SW;
+
 export const MANIFEST_REPLACE = '@@ASTRO_MANIFEST_REPLACE@@';
 export const REPLACE_EXP = new RegExp(`['"](${MANIFEST_REPLACE})['"]`, 'g');
 
@@ -23,5 +29,3 @@ navigator.serviceWorker.addEventListener('controllerchange', async () => {
 });
 `;
 
-export const SHIM = require.resolve('astro-service-worker/service-worker-integration/shim.js');
-// export const SHIM = `${process.cwd()}/service-worker-integration/shim.js`

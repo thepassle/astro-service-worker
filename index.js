@@ -80,7 +80,7 @@ export default function serviceWorker(options) {
         );
 
         /** Add precacheManifest via Workbox */
-        const a = await injectManifest({
+        await injectManifest({
           globDirectory,
           swSrc: swInPath,
           swDest: swInPath,

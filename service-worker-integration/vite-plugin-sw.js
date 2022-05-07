@@ -1,9 +1,11 @@
 import path from 'path';
 import fs from 'fs';
-import { MANIFEST_REPLACE, SW_FILE_NAME } from './constants.js';
-
-const virtualSwModuleId = 'astro-swsr-virtual-module';
-const resolvedVirtualSwModuleId = '\0' + virtualSwModuleId;
+import { 
+  MANIFEST_REPLACE, 
+  SW_FILE_NAME, 
+  VIRTUAL_SW, 
+  VIRTUAL_SW_RESOLVED 
+} from './constants.js';
 
 /**
  * Vite plugin
@@ -22,12 +24,12 @@ export function vitePluginSW(options) {
     options(opts) {
       return {
         ...opts,
-        input: [...(opts.input ?? []), virtualSwModuleId],
+        input: [...(opts.input ?? []), VIRTUAL_SW],
       };
     },
     resolveId(id) {
-      if (id === virtualSwModuleId) {
-        return resolvedVirtualSwModuleId;
+      if (id === VIRTUAL_SW) {
+        return VIRTUAL_SW_RESOLVED;
       }
     },
     load(id) {
@@ -39,7 +41,7 @@ export function vitePluginSW(options) {
         shim
       } = options;
       
-      if (id === resolvedVirtualSwModuleId) {
+      if (id === VIRTUAL_SW_RESOLVED) {
         let i = 0;
         const rendererImports = [];
         const pagesImports = [];
@@ -100,7 +102,7 @@ start(_manifest, self._args);
     },
     generateBundle(_, bundle) {
       for (const [_chunkName, chunk] of Object.entries(bundle)) {
-        if (chunk?.modules?.[resolvedVirtualSwModuleId]) {
+        if (chunk?.modules?.[VIRTUAL_SW_RESOLVED]) {
           chunk.fileName = SW_FILE_NAME;
         }
       }
