@@ -3,7 +3,6 @@ import { precacheAndRoute } from 'workbox-precaching';
 import { clientsClaim } from 'workbox-core';
 
 self.__WB_DISABLE_DEV_LOGS = true;
-precacheAndRoute(self.__WB_MANIFEST);
 
 /**
  * Empty export to avoid the following error from being logged in the build:
@@ -16,8 +15,9 @@ function createExports() {}
 function start(manifest, args) {
   const app = new App(manifest)
 
-  args.skipWaiting && self.skipWaiting();
+  args.skipWaiting && self?.skipWaiting?.();
   args.clientsClaim && clientsClaim();
+  args.worker && precacheAndRoute(self.__WB_MANIFEST);
 
   self.addEventListener('fetch', async (event) => {
     const match = app.match(event.request);

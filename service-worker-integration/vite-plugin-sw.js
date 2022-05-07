@@ -11,7 +11,7 @@ const resolvedVirtualSwModuleId = '\0' + virtualSwModuleId;
 export function vitePluginSW(options) {
   let customServiceWorkerCode = '';
 
-  if('swSrc' in options) {
+  if(options?.swSrc) {
     const userSwPath = path.join(process.cwd(), options.swSrc);
     customServiceWorkerCode = fs.readFileSync(userSwPath, 'utf-8');
   }
@@ -66,7 +66,7 @@ export function vitePluginSW(options) {
          */
         for (const page of pages.values()) {
           /** Exclude networkOnly routes from the build */
-          if(networkOnly.includes(page.route.pathname)) continue;
+          if(networkOnly?.includes(page.route.pathname)) continue;
 
           const variable = `_page${i}`;
           pagesImports.push(`import * as ${variable} from '${page.moduleSpecifier}';`);
