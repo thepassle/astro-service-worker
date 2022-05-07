@@ -16,7 +16,7 @@ function createExports() {}
 function start(manifest, args) {
   const app = new App(manifest)
 
-  args.skipWaiting && self.skipWaiting();
+  args.skipWaiting && self?.skipWaiting?.();
   args.clientsClaim && clientsClaim();
 
   self.addEventListener('fetch', async (event) => {
