@@ -1,6 +1,6 @@
 {
   "name": "astro-service-worker",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -19,7 +19,6 @@
   "dependencies": {
     "esbuild": "^0.14.38",
     "workbox-build": "^6.5.3",
-    "workbox-core": "^6.5.3",
     "workbox-precaching": "^6.5.3"
   },
   "keywords": [

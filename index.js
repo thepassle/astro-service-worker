@@ -46,6 +46,7 @@ export default function serviceWorker(options) {
             adapter: getAdapter({
               clientsClaim: options?.clientsClaim ?? true,
               skipWaiting: options?.skipWaiting ?? true,
+              browser: options?.browser ?? true,
             }),
           })
         );

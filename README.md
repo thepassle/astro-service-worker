@@ -78,8 +78,14 @@ export default defineConfig({
         // local module
         `${process.cwd()}/custom-shim.js`,
         // bare module specifier
-        'my-custom-integration/shim.js'
-      ]
+        '@worker-tools/location-polyfill'
+      ],
+
+      /** 
+       * Defaults to true, can be set to false when run in a non-browser environment, like for example a cloudflare worker
+       * in which case it'll skip precaching the workbox manifest
+       */
+      browser: false,
     }),
   ]
 });
@@ -174,7 +180,7 @@ export default defineConfig({
         // local module
         `${process.cwd()}/custom-shim.js`,
         // bare module specifier
-        'my-custom-integration/shim.js'      
+        '@worker-tools/location-polyfill'
       ]
     })
   ]
