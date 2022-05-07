@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { MANIFEST_REPLACE, SW_FILE_NAME } from './constants.js';
 
-const virtualSwModuleId = 'astro-swsr-virtual-module-sw';
+const virtualSwModuleId = 'astro-swsr-virtual-module';
 const resolvedVirtualSwModuleId = '\0' + virtualSwModuleId;
 
 /**
@@ -17,7 +17,7 @@ export function vitePluginSW(options) {
   }
 
   return {
-    name: 'vite-plugin-swsr-sw',
+    name: 'vite-plugin-swsr',
     enforce: 'post',
     options(opts) {
       return {
