@@ -2,7 +2,6 @@ import { App } from 'astro/app';
 import { precacheAndRoute } from 'workbox-precaching';
 
 self.__WB_DISABLE_DEV_LOGS = true;
-
 /**
  * Empty export to avoid the following error from being logged in the build:
  * "'createExports' is not exported by 'service-worker-integration/server.js'" 
@@ -17,20 +16,21 @@ function start(manifest, args) {
   if(args.browser) {
     args.skipWaiting && self.skipWaiting();
     args.clientsClaim && self.addEventListener('activate', () => self.clients.claim());
+
     /** Only precache when the SW is run in a browser environment, as opposed to e.g. a cloudflare worker */
     precacheAndRoute(self.__WB_MANIFEST);
   }
 
-  self.addEventListener('fetch', async (event) => {
+  self.addEventListener('fetch', (event) => {
     const match = app.match(event.request);
     
     if(match) {   
       /** Render routes */
-      const response = await app.render(event.request);
-      return event.respondWith(response);
+      const response = app.render(event.request);
+      event.respondWith(response);
     } else {
       /** No match, fallback to network */
-      return event.respondWith(fetch(event.request))
+      event.respondWith(fetch(event.request))
     }
   });
 }
