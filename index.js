@@ -53,9 +53,6 @@ export default function serviceWorker(options) {
 
         swInDir = vite.build.outDir;
       },
-      'astro:build:start': async ({ buildConfig }) => {
-        buildConfig.excludePages = options.networkOnly;
-			},
       'astro:build:ssr': (ssr) => {
         manifest = ssr.manifest;
       },
