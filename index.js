@@ -65,7 +65,7 @@ export default function serviceWorker(options) {
         const swOutFile = path.join(swOutPath, SW_FILE_NAME);
 
         /** Filter out network only routes */
-        manifest.routes = manifest.routes.filter(({routeData}) => !options.networkOnly.includes(routeData.pathname));
+        manifest.routes = manifest.routes.filter(({routeData}) => !options?.networkOnly?.includes(routeData.pathname));
 
         /** Add SSR Manifest */
         fs.writeFileSync(
