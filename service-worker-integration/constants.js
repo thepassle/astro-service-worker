@@ -1,8 +1,9 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-// export const SHIM = `${process.cwd()}/service-worker-integration/shim.js`
-export const SHIM = require.resolve('astro-service-worker/service-worker-integration/shim.js');
+export const SHIM = process?.env?.__SWSR_DEV === 'dev' 
+  ? `${process.cwd()}/service-worker-integration/shim.js`
+  : require.resolve('astro-service-worker/service-worker-integration/shim.js');
 
 export const VIRTUAL_SW = 'astro-swsr-virtual-module';
 export const VIRTUAL_SW_RESOLVED = '\0' + VIRTUAL_SW;
