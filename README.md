@@ -15,6 +15,8 @@ All you have to do is add the integration, and consider that the code you write 
 
 ## Usage
 
+### `serviceWorker`
+
 Install:
 
 ```
@@ -26,12 +28,11 @@ Add the integration to your configuration:
 `astro.config.mjs`:
 ```js
 import { defineConfig } from 'astro/config';
-import netlify from '@astrojs/netlify';
 import serviceWorker from 'astro-service-worker';
 
 export default defineConfig({
-  adapter: netlify(),
   integrations: [
+    /** Creates a client-side service worker */
     serviceWorker()
   ]
 });
@@ -39,9 +40,28 @@ export default defineConfig({
 
 > **Note:** `astro-service-worker` requires your app to run in SSR mode, instead of SSG mode.
 
+### `worker`
+
+This package also includes an adapter for worker-like environments, such as cloudflare.
+
+`astro.config.mjs`:
+```js
+import { defineConfig } from 'astro/config';
+import worker from 'astro-service-worker/adapter';
+
+export default defineConfig({
+  /** Creates an integration for worker-like environments */
+  adapter: worker()
+});
+```
+
 ## Configuration
 
+### `serviceWorker`
+
 ```js
+import serviceWorker from 'astro-service-worker';
+
 export default defineConfig({
   integrations: [
     serviceWorker({
@@ -69,30 +89,30 @@ export default defineConfig({
 
       /** Override the default service worker registration and update script */
       swScript: '',
-
-      /**
-       * Provide a module specifier to a custom shim file. This may be useful when integrating third party
-       * SSR integrations, which may need to shim certain API's in a service worker environment
-       */
-      shim: [
-        // local module
-        `${process.cwd()}/custom-shim.js`,
-        // bare module specifier
-        '@worker-tools/location-polyfill'
-      ],
-
-      /** 
-       * Defaults to true, can be set to false when run in a non-browser environment, like for example a cloudflare worker
-       * in which case it'll skip precaching the workbox manifest
-       */
-      browser: false,
     }),
   ]
 });
 ```
+### `worker`
+
+```js
+import worker from 'astro-service-worker/adapter';
+
+export default defineConfig({
+  adapter: worker({
+    /** Provide a module specifier to a custom shim file */
+    shim: [
+      /** local module */
+      `${process.cwd()}/custom-shim.js`,
+      /** bare module specifier */
+      '@worker-tools/location-polyfill'
+    ],
+  })
+});
+```
 
 
-## Overwriting Workbox options
+## `serviceWorker`: Overwriting Workbox options
 
 Internally, `astro-service-worker` makes use of [Workbox](https://developer.chrome.com/docs/workbox/modules/workbox-build/#injectmanifest-mode)'s `injectManifest` functionality. You can overwrite the default configuration via the `workbox` options:
 
@@ -109,7 +129,7 @@ export default defineConfig({
 });
 ```
 
-## Adding custom Service Worker logic
+## `serviceWorker`: Adding custom Service Worker logic
 
 It could be the case that you need to extend the Service Worker to add custom logic. To do this, you can use the `swSrc` option.
 
@@ -144,7 +164,7 @@ registerRoute(
 );
 ```
 
-## Combine with other integrations
+## `serviceWorker`: Combine with other integrations
 
 You can also combine this integration with other integrations.
 
@@ -152,7 +172,7 @@ You can also combine this integration with other integrations.
 import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
 import customElements from 'custom-elements-ssr/astro.js';
-import serviceWorker from './index.js';
+import serviceWorker from 'astro-service-worker';
 
 export default defineConfig({
   adapter: netlify(),
@@ -162,33 +182,7 @@ export default defineConfig({
   ]
 });
 ```
-
-## Shim
-
-It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. The imports you provide here will be put at the very top of the service worker module before bundling.
-
-```js
-import { defineConfig } from 'astro/config';
-import netlify from '@astrojs/netlify';
-import serviceWorker from './index.js';
-
-export default defineConfig({
-  adapter: netlify(),
-  integrations: [
-    serviceWorker({
-      shim: [
-        // local module
-        `${process.cwd()}/custom-shim.js`,
-        // bare module specifier
-        '@worker-tools/location-polyfill'
-      ]
-    })
-  ]
-});
-```
-
-
-## Network-only
+## `serviceWorker`: Network-only
 
 It could be the case that you would like to make use of some server-only endpoints or pages, perhaps for creating database connections, or other things that depend on Nodejs built-in modules that are not available in the browser. If that is the case, you can specify which page you'd like to exclude from the service worker bundle:
 
@@ -199,6 +193,26 @@ export default defineConfig({
       networkOnly: ['/networkonly-page', '/db-endpoint', 'etc']
     }),
   ]
+});
+```
+
+## `worker`: Shim
+
+It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. The imports you provide here will be put at the very top of the service worker module before bundling.
+
+```js
+import { defineConfig } from 'astro/config';
+import worker from 'astro-service-worker/adapter';
+
+export default defineConfig({
+  adapter: worker({
+    shim: [
+      // local module
+      `${process.cwd()}/custom-shim.js`,
+      // bare module specifier
+      '@worker-tools/location-polyfill'
+    ]
+  }),
 });
 ```
 

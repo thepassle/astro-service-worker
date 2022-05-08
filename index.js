@@ -7,7 +7,12 @@ import { build } from "esbuild";
 import { vitePluginSW } from './service-worker-integration/vite-plugin-sw.js';
 import { getAdapter } from './service-worker-integration/adapter.js';
 
-import { SW_SCRIPT, SW_FILE_NAME, SHIM, REPLACE_EXP } from './service-worker-integration/constants.js';
+import { 
+  SW_SCRIPT, 
+  SW_FILE_NAME, 
+  PROCESS_SHIM, 
+  REPLACE_EXP 
+} from './service-worker-integration/constants.js';
 
 /**
  * Astro Integration
@@ -20,15 +25,13 @@ export default function serviceWorker(options) {
     hooks: {
       'astro:config:setup': ({ config, command, injectScript }) => {
         renderers = config._ctx.renderers;
+        cfg = config;
 
         /** Add SW registration script */
         if(command === 'build') {
           // @TODO https://github.com/withastro/astro/issues/3298
           injectScript('head-inline', options?.swScript ?? SW_SCRIPT);
         }
-      },
-      "astro:config:done": ({ config }) => {
-        cfg = config;
       },
       'astro:build:setup': async ({ vite, pages }) => { 
         /** 
@@ -40,13 +43,13 @@ export default function serviceWorker(options) {
           vitePluginSW({ 
             pages,
             renderers,
-            shim: options?.shim || [],
             networkOnly: options?.networkOnly,
             swSrc: options?.swSrc,
             adapter: getAdapter({
               clientsClaim: options?.clientsClaim ?? true,
               skipWaiting: options?.skipWaiting ?? true,
               browser: options?.browser ?? true,
+              shim: options?.shim ?? [],
             }),
           })
         );
@@ -65,7 +68,7 @@ export default function serviceWorker(options) {
         const swOutFile = path.join(swOutPath, SW_FILE_NAME);
 
         /** Filter out network only routes */
-        manifest.routes = manifest.routes.filter(({routeData}) => !options.networkOnly.includes(routeData.pathname));
+        manifest.routes = manifest.routes.filter(({routeData}) => !options?.networkOnly?.includes(routeData.pathname));
 
         /** Add SSR Manifest */
         fs.writeFileSync(
@@ -90,7 +93,7 @@ export default function serviceWorker(options) {
           outfile: swOutFile,
           platform: 'browser',
           bundle: true,
-          inject: [SHIM],
+          inject: [PROCESS_SHIM],
           minify: options?.minify ?? true,
           ...(options?.esbuild ?? {})
         });

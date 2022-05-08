@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import '../components/my-el.js';
+// import '../components/my-el.js';
 
 const posts = (await Astro.glob('../blogs/*.md')).sort((a,b) => a.frontmatter.id - b.frontmatter.id);
 ---
@@ -26,7 +26,7 @@ const posts = (await Astro.glob('../blogs/*.md')).sort((a,b) => a.frontmatter.id
 		</article>
 	))}
 	</div>
-	<generic-tabs client:visible selected="1" label="people">
+	<generic-tabs selected="1" label="people">
 		<button slot="tab">About</button>
 		<button slot="tab">Info</button>
 

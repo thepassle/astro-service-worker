@@ -3,27 +3,29 @@ import netlify from '@astrojs/netlify';
 import customElements from 'custom-elements-ssr/astro.js';
 import serviceWorker from './index.js';
 
+// @TODO use integration here instead
 // https://astro.build/config
 export default defineConfig({
   adapter: netlify(),
   integrations: [
-    customElements(),
+    // customElements(),
     serviceWorker({
+      browser: false,
       /** Provide custom service worker logic */
-      swSrc: 'user-sw.js',
+      // swSrc: 'user-sw.js',
       // clientsClaim: false,
       // skipWaiting: false,
       /** 
        * Excludes specific pages from the service worker bundle, and forces them to always go to the network
        * This is useful for server-only specific code, for example database connections
        */
-      networkOnly: ['/networkonly', '/networkonly-endpoint'],
+      // networkOnly: ['/networkonly', '/networkonly-endpoint'],
       /** Configure workbox options */
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,png,ico}"]
-      },
+      // workbox: {
+      //   globPatterns: ["**/*.{js,css,html,png,ico}"]
+      // },
       /** Configure esbuild options */
-      esbuild: {},
+      // esbuild: {},
       /** When set to true, enables minifcation for esbuild, defaults to true */
       minify: false,
       /** Override the default service worker registration and update script */

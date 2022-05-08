@@ -1,9 +1,12 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-export const SHIM = process?.env?.__SWSR_DEV === 'dev' 
-  ? `${process.cwd()}/service-worker-integration/shim.js`
-  : require.resolve('astro-service-worker/service-worker-integration/shim.js');
+const url = u => process?.env?.__SWSR_DEV === 'dev' ? `${process.cwd()}${u}` : require.resolve(`astro-service-worker${u}`);
+
+export const MIDDLEWARE_SHIM = url('/service-worker-integration/shim/middleware.js');
+export const PROCESS_SHIM = url('/service-worker-integration/shim/process.js');
+export const SERVER_ENTRY_POINT = url('/service-worker-integration/service-worker-entrypoint.js');
+export const CLOUDFLARE_STATIC_ASSETS = url('/adapter/cloudflare/static-assets.js');
 
 export const VIRTUAL_SW = 'astro-swsr-virtual-module';
 export const VIRTUAL_SW_RESOLVED = '\0' + VIRTUAL_SW;
