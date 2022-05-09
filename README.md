@@ -253,15 +253,9 @@ It's also possible to add custom middleware to your service worker. To do so, yo
 
 Once a middleware returns a response, the other middleware will no longer run, and `event.respondWith` will be called with the response from the middleware that returned.
 
-The default middleware order is:
-- **Astro** tries to match and render a response
-- **Network** if no response has been returned by Astro or any other middleware, the request will go to the network
-
-If you need to run code _before_ Astro, you should prepend your middleware function to the `self.MIDDLEWARE` array, instead of `push`ing it to the end of the array.
+By default, **Astro** is the first middleware in the `MIDDLEWARE` array. You can add any additional middleware to run after Astro. If you need to run code _before_ Astro, you should prepend your middleware function to the `self.MIDDLEWARE` array, instead of `push`ing it to the end of the array. If no middleware has returned a response, the request will be sent to the network instead.
 
 #### `serviceWorker`:
-
-
 
 For client-side service workers, you can configure this via the `swSrc` property:
 
