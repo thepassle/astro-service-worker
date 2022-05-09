@@ -241,11 +241,10 @@ Note that you're still in charge of creating your own `wrangler.toml`:
 
 ```toml
 name = "cloudflare-astro" # Name of your project
-main = "src/index.js" # Path to your function
-compatibility_date = "2022-01-01"
+main = "dist/worker/index.js" # Path to your function
 
 [site]
-bucket = './public' # Path to where your static assets are located
+bucket = './dist' # Path to where your static assets are located
 ```
 
 ### `worker`|`serviceWorker`: Middleware

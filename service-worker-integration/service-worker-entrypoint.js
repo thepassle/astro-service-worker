@@ -1,22 +1,11 @@
 // @TODO remove, only for local testing
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+// import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
-import '@worker-tools/location-polyfill';
+// import '@worker-tools/location-polyfill';
 import { App } from 'astro/app';
 import { precacheAndRoute } from 'workbox-precaching';
 
-// @TODO remove, only for local testing
-self.__maybeHandleStaticAssets = async (event) => await getAssetFromKV(event);
-
 self.__WB_DISABLE_DEV_LOGS = true;
-
-/**
- * Empty export to avoid the following error from being logged in the build:
- * "'createExports' is not exported by 'service-worker-integration/server.js'" 
- * 
- * We dont actually need this though 🤷‍♂️
- */
-function createExports() {}
 
 function start(manifest, args) {
   const app = new App(manifest);
@@ -37,13 +26,17 @@ function start(manifest, args) {
   self.addEventListener('fetch', (event) => {
     event.respondWith(async function() {
       for (const handler of self.MIDDLEWARE) {
-        const response = await handler(event.request);
+        const response = await handler(event);
         if (response) return response;
       }
 
       return fetch(event.request);
     }());
   });
+}
+
+function createExports() {
+  return { start };
 }
 
 export {

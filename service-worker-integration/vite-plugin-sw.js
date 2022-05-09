@@ -81,7 +81,7 @@ export function vitePluginSW(options) {
         return `${adapter?.shim?.map(shim => `import '${shim}'`).join('\n')}
 ${rendererImports.join('\n')}
 ${pagesImports.join('\n')}
-import { start } from '${adapter.serverEntrypoint}';
+import { createExports } from '${adapter.serverEntrypoint}';
 import { deserializeManifest as _deserializeManifest } from 'astro/app';
 
 ${customServiceWorkerCode}
@@ -95,7 +95,9 @@ const _manifest = Object.assign(_deserializeManifest('${MANIFEST_REPLACE}'), {
 });
 
 self._args = ${adapter.args ? JSON.stringify(adapter.args) : '{}'}
-start(_manifest, self._args);
+
+const exports = createExports();
+exports?.start?.(_manifest, self._args);
 `;
       }
     },
