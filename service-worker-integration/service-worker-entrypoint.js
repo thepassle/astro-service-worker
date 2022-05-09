@@ -22,7 +22,7 @@ function start(manifest, args) {
   self.addEventListener('fetch', (event) => {
     event.respondWith(async function() {
       for (const handler of self.MIDDLEWARE) {
-        const response = await handler(event);
+        const response = await handler(event, manifest);
         if (response) return response;
       }
 

@@ -1,5 +1,9 @@
-import { build } from "esbuild";
-import { PROCESS_SHIM, MIDDLEWARE_SHIM, SERVER_ENTRY_POINT, CLOUDFLARE_STATIC_ASSETS } from '../service-worker-integration/constants.js';
+import { 
+  PROCESS_SHIM, 
+  MIDDLEWARE_SHIM, 
+  SERVER_ENTRY_POINT, 
+  CLOUDFLARE_STATIC_ASSETS 
+} from '../service-worker-integration/constants.js';
 
 /**
  * Adapter
@@ -20,39 +24,30 @@ function getAdapter(options) {
 }
 
 const cloudflare = {
-  shim: [CLOUDFLARE_STATIC_ASSETS]
+  shim: [PROCESS_SHIM, CLOUDFLARE_STATIC_ASSETS],
 }
 
 function worker(options) {
-  let cfg;
-  let workerInPath;
+  let outdir;
 
   return {
     name: 'astro-worker',
     hooks: {
       'astro:config:done': ({ config, setAdapter }) => {
-        cfg = config;
+        outdir = config.outDir;
         setAdapter(getAdapter(options));
       },
       'astro:build:start': ({ buildConfig }) => {
-        buildConfig.client = cfg.outDir;
-				buildConfig.server = new URL('./worker/', cfg.outDir);
+        buildConfig.client = outDir;
+				buildConfig.server = new URL('./worker/', outDir);
         buildConfig.serverEntry = 'index.js';
-
-        workerInPath = new URL(`${buildConfig.server}${buildConfig.serverEntry}`).pathname;
       },
-      'astro:build:done': async () => {
-        await build({
-          entryPoints: [workerInPath],
-          outfile: workerInPath,
-          platform: 'browser',
-          bundle: true,
-          allowOverwrite: true,
-          inject: [PROCESS_SHIM],
-          minify: options?.minify ?? false,
-          ...(options?.esbuild ?? {})
-        });
-      }
+      'astro:build:setup': ({ vite }) => { 
+        vite.build.rollupOptions.output.format = 'iife';
+        vite.build.rollupOptions.output.inlineDynamicImports = true;
+
+        vite.ssr.noExternal = true;
+      },
     } 
   };
 }

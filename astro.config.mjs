@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
-import customElements from 'custom-elements-ssr/astro.js';
+// import customElements from 'custom-elements-ssr/astro.js';
 import serviceWorker from './index.js';
 import worker, { cloudflare } from './adapter/index.js';
 
