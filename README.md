@@ -249,9 +249,9 @@ bucket = './dist' # Path to where your static assets are located
 
 ### `worker`|`serviceWorker`: Middleware
 
-It's also possible to add custom middleware to your service worker. To do so, you can add a function that takes an event to `self.MIDDLEWARE`.
+It's also possible to add custom middleware to your service worker. To do so, you can add a function to `self.MIDDLEWARE`. A middleware function gets passed the `event` as well as Astro's SSR `manifest`, e.g.: `middleware(event, manifest)`.
 
-Once a middleware returns a response, the other middleware will no longer run, and `event.respondWith` will be called with the response from the middleware that returned.
+If a middleware returns a response, other middleware will no longer run, and `event.respondWith` will be called with the response from the middleware that returned.
 
 By default, **Astro** is the first middleware in the `MIDDLEWARE` array. You can add any additional middleware to run after Astro. If you need to run code _before_ Astro, you should prepend your middleware function to the `self.MIDDLEWARE` array, instead of `push`ing it to the end of the array. If no middleware has returned a response, the request will be sent to the network instead.
 
@@ -265,15 +265,13 @@ serviceWorker({swSrc: 'custom-handler.js'})
 
 Where `/custom-handler.js`:
 ```js
-self.MIDDLEWARE.push((event) => {
+self.MIDDLEWARE.push((event, manifest) => {
   const url = new URL(event.request.url);
   if (url.pathname.endsWith('.jpg')) {
     return caches.match(event.request);
   }
 });
 ```
-
-
 
 #### `worker`:
 If you're creating a preset for a server-run worker-like environment, you can do this in a shim file, for example:
@@ -285,12 +283,11 @@ Where `/my-shim.js`:
 ```js
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
-self.MIDDLEWARE.push(async (event) => {
-  try {
-    const response = await getAssetFromKV(event);
-    return response;
-  } catch {
-    /** No match found, defer to next middleware */
+self.MIDDLEWARE.push((event, manifest) => {
+  const url = new URL(event.request.url);
+
+  if(manifest.assets.has(url.pathname)) {
+    return getAssetFromKV(event);
   }
 });
 ```
