@@ -20,10 +20,7 @@ function getAdapter(options) {
 }
 
 const cloudflare = {
-  shim: [
-    '@worker-tools/location-polyfill',
-    CLOUDFLARE_STATIC_ASSETS,
-  ]
+  shim: [CLOUDFLARE_STATIC_ASSETS]
 }
 
 function worker(options) {

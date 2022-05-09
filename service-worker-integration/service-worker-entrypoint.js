@@ -1,7 +1,3 @@
-// @TODO remove, only for local testing
-// import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
-
-// import '@worker-tools/location-polyfill';
 import { App } from 'astro/app';
 import { precacheAndRoute } from 'workbox-precaching';
 
