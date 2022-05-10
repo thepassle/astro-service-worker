@@ -26,7 +26,9 @@ function start(manifest, args) {
         if (response) return response;
       }
 
-      return fetch(event.request);
+      return args?.browser 
+        ? fetch(event.request)
+        : new Response(null, {status: 404, statusText: 'Not found'})
     }());
   });
 }

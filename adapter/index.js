@@ -38,8 +38,8 @@ function worker(options) {
         setAdapter(getAdapter(options));
       },
       'astro:build:start': ({ buildConfig }) => {
-        buildConfig.client = outDir;
-				buildConfig.server = new URL('./worker/', outDir);
+        buildConfig.client = outdir;
+        buildConfig.server = new URL('./worker/', outdir);
         buildConfig.serverEntry = 'index.js';
       },
       'astro:build:setup': ({ vite }) => { 
