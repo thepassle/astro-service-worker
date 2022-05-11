@@ -72,7 +72,7 @@ function worker(options) {
           [
             ...[
               MIDDLEWARE_SHIM,
-              ...(options?.shim? || [])
+              ...(options?.shim || [])
             ].map(s => `import '${s}';`),
             workerInFile
           ].join('\n')
