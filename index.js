@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { injectManifest } from 'workbox-build';
-import { build } from "esbuild";
+import { build, transform } from "esbuild";
 
 import { vitePluginSW } from './service-worker-integration/vite-plugin-sw.js';
 import { getAdapter } from './service-worker-integration/adapter.js';
@@ -23,14 +23,13 @@ export default function serviceWorker(options) {
   return {
     name: 'astro-swsr-integration',
     hooks: {
-      'astro:config:setup': ({ config, command, injectScript }) => {
+      'astro:config:setup': async ({ config, command, injectScript }) => {
         renderers = config._ctx.renderers;
         cfg = config;
 
         /** Add SW registration script */
         if(command === 'build') {
-          // @TODO https://github.com/withastro/astro/issues/3298
-          injectScript('head-inline', options?.swScript ?? SW_SCRIPT);
+          injectScript('head-inline', (await transform(options?.swScript ?? SW_SCRIPT, {minify: true})).code);
         }
       },
       'astro:build:setup': async ({ vite, pages }) => { 
@@ -78,7 +77,7 @@ export default function serviceWorker(options) {
             () => JSON.stringify(manifest)
           )
         );
-            console.log({swInPath, swOutFile})
+
         /** Bundle and build for the browser */
         await build({
           entryPoints: [swInPath],
@@ -89,7 +88,7 @@ export default function serviceWorker(options) {
           minify: options?.minify ?? true,
           ...(options?.esbuild ?? {})
         });
-        
+
         fs.unlinkSync(swInPath);
 
         /** Add precacheManifest via Workbox */

@@ -17,19 +17,28 @@ export const REPLACE_EXP = new RegExp(`['"](${MANIFEST_REPLACE})['"]`, 'g');
 export const SW_FILE_NAME = 'sw.js';
 export const SW_SCRIPT = `
 navigator.serviceWorker.register('/${SW_FILE_NAME}');
-let refreshing = false;
+async function handleUpdate() {
+  if ("serviceWorker"in navigator) {
+    let refreshing;
 
-navigator.serviceWorker.addEventListener('controllerchange', async () => {
-  if (refreshing) return;
+    // check to see if there is a current active service worker
+    const oldSw = (await navigator.serviceWorker.getRegistration())?.active?.state;
 
-  /** when the controllerchange event has fired, we get the new service worker */
-  const newSw = (await navigator.serviceWorker.getRegistration())?.active?.state;
+    navigator.serviceWorker.addEventListener('controllerchange', async () => {
+      if (refreshing) return;
 
-  /** if there was already an old activated service worker, and a new activating service worker, do the reload */
-  if(oldSw === 'activated' && newSw === 'activating') {
-    refreshing = true;
-    window.location.reload();
+      // when the controllerchange event has fired, we get the new service worker
+      const newSw = (await navigator.serviceWorker.getRegistration())?.active?.state;
+
+      // if there was already an old activated service worker, and a new activating service worker, do the reload
+      if(oldSw === 'activated' && newSw === 'activating') {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
   }
-});
+}
+
+handleUpdate();
 `;
 
