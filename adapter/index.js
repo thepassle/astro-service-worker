@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { build } from 'esbuild';
+
 import { 
   PROCESS_SHIM, 
   MIDDLEWARE_SHIM, 
@@ -15,12 +17,6 @@ function getAdapter(options) {
     name: 'astro-worker-adapter',
     serverEntrypoint: SERVER_ENTRY_POINT,
     exports: ['start'],
-    // @TODO depends on PR
-    shim: [
-      PROCESS_SHIM, 
-      MIDDLEWARE_SHIM, 
-      ...(options?.shim ?? [])
-    ],
     args: {
       clientsClaim: false,
       skipWaiting: false,
@@ -37,7 +33,7 @@ compatibility_date = "${(new Date()).toISOString().split('T')[0]}"
 bucket = './dist'`;
 
 const cloudflare = {
-  shim: [CLOUDFLARE_STATIC_ASSETS],
+  shim: [MIDDLEWARE_SHIM, CLOUDFLARE_STATIC_ASSETS],
   initConfig: () => {
     const wranglerPath = path.join(process.cwd(), 'wrangler.toml');
     if(!fs.existsSync(wranglerPath)) {
@@ -47,7 +43,7 @@ const cloudflare = {
 }
 
 function worker(options) {
-  let outdir;
+  let cfg, outdir;
 
   return {
     name: 'astro-worker',
@@ -60,14 +56,38 @@ function worker(options) {
         buildConfig.client = outdir;
         buildConfig.server = new URL('./worker/', outdir);
         buildConfig.serverEntry = 'index.js';
+        cfg = buildConfig;
       },
       'astro:build:setup': ({ vite }) => { 
-        vite.build.rollupOptions.output.format = 'iife';
-        vite.build.rollupOptions.output.inlineDynamicImports = true;
-
         vite.ssr.noExternal = true;
       },
-      'astro:build:done': options?.initConfig
+      'astro:build:done': async (dir) => {
+        const chunksPath = path.join(cfg.server.pathname, 'chunks', path.sep);
+        const workerInFilePath = path.join(cfg.server.pathname, 'index.js');
+        const workerInFile = fs.readFileSync(workerInFilePath);
+
+        /** Add shims */
+        fs.writeFileSync(
+          workerInFilePath, 
+          [
+            ...options?.shim?.map(s => `import '${s}';`),
+            workerInFile
+          ].join('\n')
+        );
+
+        await build({
+          entryPoints: [workerInFilePath],
+          outfile: workerInFilePath,
+          allowOverwrite: true,
+          platform: 'browser',
+          bundle: true,
+          inject: [PROCESS_SHIM],
+          minify: options?.minify ?? false,
+          ...(options?.esbuild ?? {})
+        });
+
+        fs.rmdirSync(chunksPath, { recursive: true });
+      }
     } 
   };
 }

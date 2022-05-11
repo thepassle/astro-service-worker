@@ -78,15 +78,7 @@ export default function serviceWorker(options) {
             () => JSON.stringify(manifest)
           )
         );
-
-        /** Add precacheManifest via Workbox */
-        await injectManifest({
-          globDirectory,
-          swSrc: swInPath,
-          swDest: swInPath,
-          ...(options?.workbox ?? {})
-        });
-
+            console.log({swInPath, swOutFile})
         /** Bundle and build for the browser */
         await build({
           entryPoints: [swInPath],
@@ -97,8 +89,17 @@ export default function serviceWorker(options) {
           minify: options?.minify ?? true,
           ...(options?.esbuild ?? {})
         });
-
+        
         fs.unlinkSync(swInPath);
+
+        /** Add precacheManifest via Workbox */
+        await injectManifest({
+          globDirectory,
+          swSrc: swOutFile,
+          swDest: swOutFile,
+          ...(options?.workbox ?? {})
+        });
+
       }
     }
   }
