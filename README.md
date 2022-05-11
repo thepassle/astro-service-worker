@@ -236,7 +236,7 @@ export default defineConfig({
 });
 ```
 
-Note that you're still in charge of creating your own `wrangler.toml`:
+If no `wrangler.toml` is present, one will be created for you. If a `wrangler.toml` is already present, you're in charge of adding the required settings, here's an example:
 
 ```toml
 name = "cloudflare-astro" # Name of your project

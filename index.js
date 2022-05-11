@@ -98,7 +98,6 @@ export default function serviceWorker(options) {
           swDest: swOutFile,
           ...(options?.workbox ?? {})
         });
-
       }
     }
   }
