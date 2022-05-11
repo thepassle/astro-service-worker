@@ -1,0 +1,6 @@
+name = "my-project"
+main = "dist/worker/index.js"
+compatibility_date = "2022-05-10"
+
+[site]
+bucket = './dist'

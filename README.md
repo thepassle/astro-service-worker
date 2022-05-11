@@ -12,7 +12,6 @@
 
 All you have to do is add the integration, and consider that the code you write in your Astro frontmatter will now also need to run in the browser/service-worker. This means that you will not be able to make use of Nodejs built-in dependencies, or other commonjs libraries. If you still want to write server-only code, you can use the [`networkOnly`](#network-only) configuration option.
 
-
 ## Usage
 
 ### `serviceWorker`

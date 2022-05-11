@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { 
   PROCESS_SHIM, 
   MIDDLEWARE_SHIM, 
@@ -14,7 +16,11 @@ function getAdapter(options) {
     serverEntrypoint: SERVER_ENTRY_POINT,
     exports: ['start'],
     // @TODO depends on PR
-    shim: [MIDDLEWARE_SHIM, ...(options?.shim ?? [])],
+    shim: [
+      PROCESS_SHIM, 
+      MIDDLEWARE_SHIM, 
+      ...(options?.shim ?? [])
+    ],
     args: {
       clientsClaim: false,
       skipWaiting: false,
@@ -23,8 +29,21 @@ function getAdapter(options) {
   }
 }
 
+const WRANGLER_TOML =  `name = "my-project"
+main = "dist/worker/index.js"
+compatibility_date = "${(new Date()).toISOString().split('T')[0]}"
+
+[site]
+bucket = './dist'`;
+
 const cloudflare = {
-  shim: [PROCESS_SHIM, CLOUDFLARE_STATIC_ASSETS],
+  shim: [CLOUDFLARE_STATIC_ASSETS],
+  initConfig: () => {
+    const wranglerPath = path.join(process.cwd(), 'wrangler.toml');
+    if(!fs.existsSync(wranglerPath)) {
+      fs.writeFileSync(wranglerPath, WRANGLER_TOML);
+    }
+  }
 }
 
 function worker(options) {
@@ -48,6 +67,7 @@ function worker(options) {
 
         vite.ssr.noExternal = true;
       },
+      'astro:build:done': options?.initConfig
     } 
   };
 }
