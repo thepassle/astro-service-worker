@@ -33,7 +33,7 @@ compatibility_date = "${(new Date()).toISOString().split('T')[0]}"
 bucket = './dist'`;
 
 const cloudflare = {
-  shim: [MIDDLEWARE_SHIM, CLOUDFLARE_STATIC_ASSETS],
+  shim: [CLOUDFLARE_STATIC_ASSETS],
   initConfig: () => {
     const wranglerPath = path.join(process.cwd(), 'wrangler.toml');
     if(!fs.existsSync(wranglerPath)) {
@@ -70,7 +70,10 @@ function worker(options) {
         fs.writeFileSync(
           workerInFilePath, 
           [
-            ...options?.shim?.map(s => `import '${s}';`),
+            ...[
+              MIDDLEWARE_SHIM,
+              ...(options?.shim? || [])
+            ].map(s => `import '${s}';`),
             workerInFile
           ].join('\n')
         );

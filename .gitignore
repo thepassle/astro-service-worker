@@ -2,6 +2,7 @@
 dist/
 .output/
 netlify/
+wrangler.toml
 
 # dependencies
 node_modules/
