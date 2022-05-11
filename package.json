@@ -1,6 +1,6 @@
 {
   "name": "astro-service-worker",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -11,12 +11,12 @@
     "deploy": "npm run build && netlify deploy --prod --dir=netlify"
   },
   "devDependencies": {
-    "@astrojs/netlify": "^0.3.3",
     "@generic-components/components": "^1.1.5",
     "astro": "^1.0.0-beta.24",
     "custom-elements-ssr": "^0.0.11"
   },
   "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.2.0",
     "esbuild": "^0.14.38",
     "workbox-build": "^6.5.3",
     "workbox-precaching": "^6.5.3"

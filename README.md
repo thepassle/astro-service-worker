@@ -12,8 +12,9 @@
 
 All you have to do is add the integration, and consider that the code you write in your Astro frontmatter will now also need to run in the browser/service-worker. This means that you will not be able to make use of Nodejs built-in dependencies, or other commonjs libraries. If you still want to write server-only code, you can use the [`networkOnly`](#network-only) configuration option.
 
-
 ## Usage
+
+### `serviceWorker`
 
 Install:
 
@@ -32,6 +33,7 @@ import serviceWorker from 'astro-service-worker';
 export default defineConfig({
   adapter: netlify(),
   integrations: [
+    /** Creates a client-side service worker */
     serviceWorker()
   ]
 });
@@ -39,9 +41,28 @@ export default defineConfig({
 
 > **Note:** `astro-service-worker` requires your app to run in SSR mode, instead of SSG mode.
 
+### `worker`
+
+This package also includes an adapter to build your apps for worker-like environments, such as cloudflare.
+
+`astro.config.mjs`:
+```js
+import { defineConfig } from 'astro/config';
+import worker from 'astro-service-worker/adapter';
+
+export default defineConfig({
+  /** Creates an integration for worker-like environments */
+  adapter: worker()
+});
+```
+
 ## Configuration
 
+### `serviceWorker`
+
 ```js
+import serviceWorker from 'astro-service-worker';
+
 export default defineConfig({
   integrations: [
     serviceWorker({
@@ -69,30 +90,35 @@ export default defineConfig({
 
       /** Override the default service worker registration and update script */
       swScript: '',
-
-      /**
-       * Provide a module specifier to a custom shim file. This may be useful when integrating third party
-       * SSR integrations, which may need to shim certain API's in a service worker environment
-       */
-      shim: [
-        // local module
-        `${process.cwd()}/custom-shim.js`,
-        // bare module specifier
-        '@worker-tools/location-polyfill'
-      ],
-
-      /** 
-       * Defaults to true, can be set to false when run in a non-browser environment, like for example a cloudflare worker
-       * in which case it'll skip precaching the workbox manifest
-       */
-      browser: false,
     }),
   ]
 });
 ```
+### `worker`
 
+```js
+import worker, { cloudflare } from 'astro-service-worker/adapter';
 
-## Overwriting Workbox options
+export default defineConfig({
+  /** Using a preset: */
+  adapter: worker(cloudflare),
+
+  /** Configuration: */
+  adapter: worker({
+    /** Provide a module specifier to a custom shim file */
+    shim: [
+      /** local module */
+      `${process.cwd()}/custom-shim.js`,
+      /** bare module specifier */
+      '@worker-tools/location-polyfill'
+    ],
+  })
+});
+```
+
+## Advanced configuration
+
+### `serviceWorker`: Overwriting Workbox options
 
 Internally, `astro-service-worker` makes use of [Workbox](https://developer.chrome.com/docs/workbox/modules/workbox-build/#injectmanifest-mode)'s `injectManifest` functionality. You can overwrite the default configuration via the `workbox` options:
 
@@ -109,7 +135,7 @@ export default defineConfig({
 });
 ```
 
-## Adding custom Service Worker logic
+### `serviceWorker`: Adding custom Service Worker logic
 
 It could be the case that you need to extend the Service Worker to add custom logic. To do this, you can use the `swSrc` option.
 
@@ -125,10 +151,12 @@ export default defineConfig({
 
 `my-project/my-custom-sw.js`:
 ```js
-self.addEventListener('fetch', (e) => {
+self.addEventListener('activate', (e) => {
   console.log('Custom logic!');
 });
 ```
+
+> Note that if you want to add custom logic for the `'fetch'` handler, you should use a [middleware](#middleware) instead.
 
 Note that you can also use modules in your custom service worker logic:
 
@@ -144,7 +172,7 @@ registerRoute(
 );
 ```
 
-## Combine with other integrations
+### `serviceWorker`: Combine with other integrations
 
 You can also combine this integration with other integrations.
 
@@ -152,7 +180,7 @@ You can also combine this integration with other integrations.
 import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
 import customElements from 'custom-elements-ssr/astro.js';
-import serviceWorker from './index.js';
+import serviceWorker from 'astro-service-worker';
 
 export default defineConfig({
   adapter: netlify(),
@@ -162,33 +190,7 @@ export default defineConfig({
   ]
 });
 ```
-
-## Shim
-
-It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. The imports you provide here will be put at the very top of the service worker module before bundling.
-
-```js
-import { defineConfig } from 'astro/config';
-import netlify from '@astrojs/netlify';
-import serviceWorker from './index.js';
-
-export default defineConfig({
-  adapter: netlify(),
-  integrations: [
-    serviceWorker({
-      shim: [
-        // local module
-        `${process.cwd()}/custom-shim.js`,
-        // bare module specifier
-        '@worker-tools/location-polyfill'
-      ]
-    })
-  ]
-});
-```
-
-
-## Network-only
+### `serviceWorker`: Network-only
 
 It could be the case that you would like to make use of some server-only endpoints or pages, perhaps for creating database connections, or other things that depend on Nodejs built-in modules that are not available in the browser. If that is the case, you can specify which page you'd like to exclude from the service worker bundle:
 
@@ -202,6 +204,92 @@ export default defineConfig({
 });
 ```
 
+### `worker`: Shim
+
+It could be the case that other integrations will need to shim certain API's in the service worker, however. In this case, you can provide a custom import. The imports you provide here will be put at the very top of the service worker module before bundling.
+
+```js
+import { defineConfig } from 'astro/config';
+import worker from 'astro-service-worker/adapter';
+
+export default defineConfig({
+  adapter: worker({
+    shim: [
+      // local module
+      `${process.cwd()}/custom-shim.js`,
+      // bare module specifier
+      '@worker-tools/location-polyfill'
+    ]
+  }),
+});
+```
+
+### `worker`: Presets
+
+The adapter also comes with some environment specific presets, for example if you're deploying on cloudflare, you'll want to use the `cloudflare` preset:
+
+```js
+import worker, { cloudflare } from 'astro-service-worker/adapter';
+
+export default defineConfig({
+  adapter: worker(cloudflare)
+});
+```
+
+If no `wrangler.toml` is present, one will be created for you. If a `wrangler.toml` is already present, you're in charge of adding the required settings, here's an example:
+
+```toml
+name = "cloudflare-astro" # Name of your project
+main = "dist/worker/index.js" # Path to your function
+
+[site]
+bucket = './dist' # Path to where your static assets are located
+```
+
+### `worker`|`serviceWorker`: Middleware
+
+It's also possible to add custom middleware to your service worker. To do so, you can add a function to `self.MIDDLEWARE`. A middleware function gets passed the `event` as well as Astro's SSR `manifest`, e.g.: `middleware(event, manifest)`.
+
+If a middleware returns a response, other middleware will no longer run, and `event.respondWith` will be called with the response from the middleware that returned.
+
+By default, **Astro** is the first middleware in the `MIDDLEWARE` array. You can add any additional middleware to run after Astro. If you need to run code _before_ Astro, you should prepend your middleware function to the `self.MIDDLEWARE` array, instead of `push`ing it to the end of the array. If no middleware has returned a response, the request will be sent to the network instead or when ran on the server, return a 404.
+
+#### `serviceWorker`:
+
+For client-side service workers, you can configure this via the `swSrc` property:
+
+```js
+serviceWorker({swSrc: 'custom-handler.js'})
+```
+
+Where `/custom-handler.js`:
+```js
+self.MIDDLEWARE.push((event, manifest) => {
+  const url = new URL(event.request.url);
+  if (url.pathname.endsWith('.jpg')) {
+    return caches.match(event.request);
+  }
+});
+```
+
+#### `worker`:
+If you're creating a preset for a server-run worker-like environment, you can do this in a shim file, for example:
+```js
+worker({shim: [`${process.cwd()}/my-shim.js`]})
+```
+
+Where `/my-shim.js`:
+```js
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+
+self.MIDDLEWARE.push((event, manifest) => {
+  const url = new URL(event.request.url);
+
+  if(manifest.assets.has(url.pathname)) {
+    return getAssetFromKV(event);
+  }
+});
+```
 
 ## Future: Streaming astro apps
 

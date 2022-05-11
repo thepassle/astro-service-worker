@@ -7,7 +7,8 @@ import { ExpirationPlugin } from 'workbox-expiration';
  * This file provides custom service worker logic for the serviceWorker integration
  * You can configure this via the `swSrc` configuration property
  */
-self.addEventListener('fetch', (e) => {
+
+self.MIDDLEWARE.push(e => {
   console.log('Custom logging logic: ', e.request.url);
 });
 

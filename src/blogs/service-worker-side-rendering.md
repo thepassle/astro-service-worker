@@ -60,8 +60,6 @@ I've recently been hacking on [Astro](https://astro.build) SSR projects a bunch,
 
 So I got hacking and, well, it turns out you totally can. In this example, you can see a real Astro SSR application run by a service worker. This is hugely exciting for several reasons:
 
-🚨 @TODO VIDEO 🚨
-
 - Your Astro app is now offline-capable
 - Your app is now installable
 - The function invocations of your hosting provider are reduced dramatically, because requests can be served by the service worker in-browser

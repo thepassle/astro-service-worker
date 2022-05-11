@@ -2,12 +2,17 @@ import path from 'path';
 import fs from 'fs';
 
 import { injectManifest } from 'workbox-build';
-import { build } from "esbuild";
+import { build, transform } from "esbuild";
 
 import { vitePluginSW } from './service-worker-integration/vite-plugin-sw.js';
 import { getAdapter } from './service-worker-integration/adapter.js';
 
-import { SW_SCRIPT, SW_FILE_NAME, SHIM, REPLACE_EXP } from './service-worker-integration/constants.js';
+import { 
+  SW_SCRIPT, 
+  SW_FILE_NAME, 
+  PROCESS_SHIM, 
+  REPLACE_EXP 
+} from './service-worker-integration/constants.js';
 
 /**
  * Astro Integration
@@ -18,17 +23,14 @@ export default function serviceWorker(options) {
   return {
     name: 'astro-swsr-integration',
     hooks: {
-      'astro:config:setup': ({ config, command, injectScript }) => {
+      'astro:config:setup': async ({ config, command, injectScript }) => {
         renderers = config._ctx.renderers;
+        cfg = config;
 
         /** Add SW registration script */
         if(command === 'build') {
-          // @TODO https://github.com/withastro/astro/issues/3298
-          injectScript('head-inline', options?.swScript ?? SW_SCRIPT);
+          injectScript('head-inline', (await transform(options?.swScript ?? SW_SCRIPT, {minify: true})).code);
         }
-      },
-      "astro:config:done": ({ config }) => {
-        cfg = config;
       },
       'astro:build:setup': async ({ vite, pages }) => { 
         /** 
@@ -40,13 +42,13 @@ export default function serviceWorker(options) {
           vitePluginSW({ 
             pages,
             renderers,
-            shim: options?.shim || [],
             networkOnly: options?.networkOnly,
             swSrc: options?.swSrc,
             adapter: getAdapter({
               clientsClaim: options?.clientsClaim ?? true,
               skipWaiting: options?.skipWaiting ?? true,
               browser: options?.browser ?? true,
+              shim: options?.shim ?? [],
             }),
           })
         );
@@ -76,26 +78,26 @@ export default function serviceWorker(options) {
           )
         );
 
-        /** Add precacheManifest via Workbox */
-        await injectManifest({
-          globDirectory,
-          swSrc: swInPath,
-          swDest: swInPath,
-          ...(options?.workbox ?? {})
-        });
-
         /** Bundle and build for the browser */
         await build({
           entryPoints: [swInPath],
           outfile: swOutFile,
           platform: 'browser',
           bundle: true,
-          inject: [SHIM],
+          inject: [PROCESS_SHIM],
           minify: options?.minify ?? true,
           ...(options?.esbuild ?? {})
         });
 
         fs.unlinkSync(swInPath);
+
+        /** Add precacheManifest via Workbox */
+        await injectManifest({
+          globDirectory,
+          swSrc: swOutFile,
+          swDest: swOutFile,
+          ...(options?.workbox ?? {})
+        });
       }
     }
   }
