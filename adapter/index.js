@@ -90,6 +90,8 @@ function worker(options) {
         });
 
         fs.rmdirSync(chunksPath, { recursive: true });
+
+        await options?.initConfig?.(dir);
       }
     } 
   };
