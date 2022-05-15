@@ -1,6 +1,6 @@
 {
   "name": "astro-service-worker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -31,6 +31,7 @@
   ],
   "files": [
     "index.js",
-    "service-worker-integration"
+    "service-worker-integration",
+    "adapter"
   ]
 }
