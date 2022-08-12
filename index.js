@@ -69,6 +69,7 @@ export default function serviceWorker(options) {
         /** Filter out network only routes */
         manifest.routes = manifest.routes.filter(({routeData}) => !options?.networkOnly?.includes(routeData.pathname));
 
+        console.log(1, {swInPath, swInFile, swOutPath, swOutFile});
         /** Add SSR Manifest */
         fs.writeFileSync(
           swInPath, 
@@ -77,11 +78,17 @@ export default function serviceWorker(options) {
             () => JSON.stringify(manifest)
           )
         );
-
+        console.log(2, 'wrote file: ', swInPath);
+        console.log(3,         swInFile.replace(
+          REPLACE_EXP, 
+          () => JSON.stringify(manifest)
+        ))
         /** Bundle and build for the browser */
+
         await build({
           entryPoints: [swInPath],
           outfile: swOutFile,
+          allowOverwrite: true,
           platform: 'browser',
           bundle: true,
           inject: [PROCESS_SHIM],
@@ -89,7 +96,7 @@ export default function serviceWorker(options) {
           ...(options?.esbuild ?? {})
         });
 
-        fs.unlinkSync(swInPath);
+        // fs.unlinkSync(swInPath);
 
         /** Add precacheManifest via Workbox */
         await injectManifest({
